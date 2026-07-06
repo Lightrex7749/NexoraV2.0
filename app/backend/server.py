@@ -1,4 +1,4 @@
-"from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,7 +6,7 @@ import os
 import re
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, EmailStr, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
@@ -41,27 +41,10 @@ class NewsletterCreate(BaseModel):
     source: Optional[str] = "landing"
 
 
-class NewsletterEntry(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    email: str
-    source: str = "landing"
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-
 class ContactCreate(BaseModel):
     name: str
     email: str
     message: str
-
-
-class ContactEntry(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    name: str
-    email: str
-    message: str
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 @api_router.get("/")
@@ -75,8 +58,8 @@ async def health():
 
 
 @api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_obj = StatusCheck(**input.model_dump())
+async def create_status_check(payload: StatusCheckCreate):
+    status_obj = StatusCheck(**payload.model_dump())
     doc = status_obj.model_dump()
     doc['timestamp'] = doc['timestamp'].isoformat()
     await db.status_checks.insert_one(doc)
@@ -100,17 +83,14 @@ async def newsletter_signup(payload: NewsletterCreate):
     existing = await db.newsletter.find_one({"email": email}, {"_id": 0})
     if existing:
         return {"success": True, "message": "You're already on the list. Stay tuned.", "duplicate": True}
-    entry = NewsletterEntry(email=email, source=payload.source or "landing")
-    doc = entry.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.newsletter.insert_one(doc)
+    entry = {
+        "id": str(uuid.uuid4()),
+        "email": email,
+        "source": payload.source or "landing",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.newsletter.insert_one(entry)
     return {"success": True, "message": "You're in. We'll be in touch.", "duplicate": False}
-
-
-@api_router.get("/newsletter/count")
-async def newsletter_count():
-    count = await db.newsletter.count_documents({})
-    return {"count": count}
 
 
 @api_router.post("/contact")
@@ -120,10 +100,14 @@ async def contact(payload: ContactCreate):
         raise HTTPException(status_code=400, detail="Please provide a valid email address.")
     if not payload.name.strip() or not payload.message.strip():
         raise HTTPException(status_code=400, detail="Name and message are required.")
-    entry = ContactEntry(name=payload.name.strip(), email=email, message=payload.message.strip())
-    doc = entry.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    await db.contacts.insert_one(doc)
+    entry = {
+        "id": str(uuid.uuid4()),
+        "name": payload.name.strip(),
+        "email": email,
+        "message": payload.message.strip(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.contacts.insert_one(entry)
     return {"success": True, "message": "Thanks — a member of our team will reach out shortly."}
 
 
@@ -147,4 +131,3 @@ logger = logging.getLogger(__name__)
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
-"
