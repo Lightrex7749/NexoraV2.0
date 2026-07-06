@@ -179,21 +179,26 @@ function Journey() {
 
   useEffect(() => {
     if (!containerRef.current || !trackRef.current) return;
-    const track = trackRef.current;
-    const totalScroll = track.scrollWidth - window.innerWidth;
-    const st = gsap.to(track, {
-      x: -totalScroll,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: () => `+=${totalScroll}`,
-        pin: true,
-        scrub: 1,
-        invalidateOnRefresh: true,
-      },
-    });
-    return () => { st.scrollTrigger?.kill(); st.kill(); };
+    
+    let ctx = gsap.context(() => {
+      const track = trackRef.current;
+      const totalScroll = track.scrollWidth - window.innerWidth;
+      
+      gsap.to(track, {
+        x: -totalScroll,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: () => `+=${totalScroll}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+    }, containerRef);
+    
+    return () => ctx.revert();
   }, []);
 
   return (
