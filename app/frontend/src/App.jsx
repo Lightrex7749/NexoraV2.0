@@ -43,8 +43,14 @@ function ScrollToTop() {
 }
 
 function PublicLayout() {
+  useEffect(() => {
+    document.body.classList.add('public-page');
+    return () => document.body.classList.remove('public-page');
+  }, []);
+
   return (
     <>
+      <CustomCursor />
       <PublicNavbar />
       <Outlet />
       <PublicFooter />
@@ -85,7 +91,6 @@ export default function App() {
       <LenisRoot>
         <div className="relative bg-ink-950 min-h-screen">
         <Grain />
-        <CustomCursor />
         <Toaster theme="dark" position="bottom-right" richColors />
         <ScrollToTop />
         <Routes>

@@ -1,12 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, FileText, Users, Sparkles } from 'lucide-react';
+import axios from 'axios';
+import { ArrowLeft, FileText, Users, Sparkles, Loader2, Save, X } from 'lucide-react';
 import { GlassCard, Overline, MagneticButton } from '../../components/ui/primitives';
-import { STARTUPS, BUSINESS_PLAN_SECTIONS, ROADMAP } from '../../mock/data';
+import { BUSINESS_PLAN_SECTIONS, ROADMAP } from '../../mock/data';
 
 export default function StartupDetail() {
   const { id } = useParams();
-  const s = STARTUPS.find(x => x.id === id) || STARTUPS[0];
+  const [s, setS] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Edit State
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({ name: '', tagline: '', stage: '' });
+
+  // Apply State
+  const [hasApplied, setHasApplied] = useState(false);
+
+  useEffect(() => {
+    const fetchStartup = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/startups/${id}`);
+        setS(res.data.data);
+        setEditForm({
+          name: res.data.data.name,
+          tagline: res.data.data.tagline,
+          stage: res.data.data.stage
+        });
+      } catch (err) {
+        console.error("Failed to fetch startup:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStartup();
+  }, [id]);
+
+  const handleSave = async () => {
+    try {
+      const res = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/startups/${id}`, editForm);
+      if (res.data.success) {
+        setS({ ...s, ...editForm, stage: editForm.stage.charAt(0).toUpperCase() + editForm.stage.slice(1) });
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error("Failed to save startup:", error);
+    }
+  };
+
+  const handleApply = () => {
+    // Mock application success for now
+    setHasApplied(true);
+  };
+
+  if (loading) {
+    return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-emerald-500" /></div>;
+  }
+
+  if (!s) {
+    return <div className="text-zinc-400">Startup not found.</div>;
+  }
 
   return (
     <div className="space-y-8" data-testid="startup-detail">
@@ -22,10 +75,45 @@ export default function StartupDetail() {
           </div>
         </div>
         <div className="flex gap-3">
-          <MagneticButton variant="ghost" data-testid="edit-startup"><FileText size={14} /> Edit</MagneticButton>
-          <MagneticButton data-testid="run-ai-startup"><Sparkles size={14} /> Run AI</MagneticButton>
+          <MagneticButton variant="ghost" onClick={() => setIsEditing(true)} data-testid="edit-startup">
+            <FileText size={14} /> Edit
+          </MagneticButton>
+          <MagneticButton onClick={handleApply} disabled={hasApplied} data-testid="apply-startup">
+            {hasApplied ? 'Applied ✓' : 'Apply for Project'}
+          </MagneticButton>
         </div>
       </div>
+
+      {isEditing && (
+        <GlassCard className="p-6 border border-emerald-500/30">
+          <div className="flex justify-between items-center mb-4">
+            <Overline>Edit Startup</Overline>
+            <button onClick={() => setIsEditing(false)} className="text-zinc-400 hover:text-white"><X size={16}/></button>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs text-zinc-400 block mb-1">Name</label>
+              <input type="text" value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-zinc-400 block mb-1">Tagline</label>
+              <input type="text" value={editForm.tagline} onChange={e => setEditForm({...editForm, tagline: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-zinc-400 block mb-1">Stage</label>
+              <select value={editForm.stage.toLowerCase()} onChange={e => setEditForm({...editForm, stage: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white text-sm">
+                <option value="idea">Idea</option>
+                <option value="validation">Validation</option>
+                <option value="growth">Growth</option>
+                <option value="scale">Scale</option>
+              </select>
+            </div>
+            <div className="flex justify-end pt-2">
+              <MagneticButton onClick={handleSave}><Save size={14}/> Save Changes</MagneticButton>
+            </div>
+          </div>
+        </GlassCard>
+      )}
 
       <div className="grid md:grid-cols-3 gap-4">
         <GlassCard className="p-6"><Overline>Stage</Overline><div className="font-display text-3xl mt-2">{s.stage}</div><div className="text-xs text-zinc-500 mt-1">Nexora incubation pipeline</div></GlassCard>

@@ -32,11 +32,9 @@ body {
 
 /* Custom cursor */
 @media (hover: hover) and (pointer: fine) {
-
-    html,
-    body,
-    a,
-    button {
+    .public-page,
+    .public-page a,
+    .public-page button {
         cursor: none;
     }
 }

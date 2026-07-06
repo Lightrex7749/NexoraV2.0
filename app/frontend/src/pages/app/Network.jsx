@@ -1,13 +1,45 @@
-import React, { useState } from 'react';
-import { Search, ShieldCheck, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Search, ShieldCheck, MapPin, Loader2, Check } from 'lucide-react';
 import { GlassCard, Overline, MagneticButton } from '../../components/ui/primitives';
-import { PEOPLE } from '../../mock/data';
-
 export default function Network() {
+  const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [role, setRole] = useState('All');
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [connections, setConnections] = useState({});
   const roles = ['All', 'Founder', 'Mentor', 'Investor', 'Team Member'];
-  const filtered = PEOPLE.filter(p =>
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/all`);
+        if (res.data.success) {
+          setUsers(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch users:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const handleConnect = async (targetId) => {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/user/connect/${targetId}`);
+      if (res.data.success) {
+        setConnections({ ...connections, [targetId]: true });
+      }
+    } catch (err) {
+      console.error("Failed to connect:", err);
+    }
+  };
+
+  const filtered = users.filter(p =>
     (role === 'All' || p.role === role) &&
     (q === '' || p.name.toLowerCase().includes(q.toLowerCase()) || p.industry.toLowerCase().includes(q.toLowerCase()))
   );
@@ -31,27 +63,39 @@ export default function Network() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map(p => (
-          <GlassCard key={p.id} className="p-6">
-            <div className="flex items-start gap-4 mb-4">
-              <img src={p.avatar} alt={p.name} className="w-14 h-14 rounded-full object-cover" />
-              <div className="flex-1">
-                <div className="flex items-center gap-1.5">
-                  <div className="font-display text-lg font-medium">{p.name}</div>
-                  {p.verified && <ShieldCheck size={12} className="text-emerald-500" />}
+      {loading ? (
+        <div className="flex justify-center p-12">
+          <Loader2 className="animate-spin text-emerald-500" />
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map(p => (
+            <GlassCard key={p.id} className="p-6 flex flex-col">
+              <div className="flex items-start gap-4 mb-4">
+                <img src={p.avatar} alt={p.name} className="w-14 h-14 rounded-full object-cover" />
+                <div className="flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <div className="font-display text-lg font-medium">{p.name}</div>
+                    {p.verified && <ShieldCheck size={12} className="text-emerald-500" />}
+                  </div>
+                  <div className="text-xs text-zinc-500">{p.role} • {p.firm}</div>
                 </div>
-                <div className="text-xs text-zinc-500">{p.role} • {p.firm}</div>
               </div>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-zinc-500 mb-4"><MapPin size={12} /> {p.location} • {p.industry}</div>
-            <div className="flex gap-2">
-              <MagneticButton variant="ghost" className="!px-4 !py-2 text-xs flex-1">Connect</MagneticButton>
-              <MagneticButton className="!px-4 !py-2 text-xs flex-1">Message</MagneticButton>
-            </div>
-          </GlassCard>
-        ))}
-      </div>
+              <div className="flex items-center gap-2 text-xs text-zinc-500 mb-4 mt-auto"><MapPin size={12} /> {p.location} • {p.industry}</div>
+              <div className="flex gap-2">
+                {connections[p.id] ? (
+                  <button disabled className="px-4 py-2 text-xs flex-1 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center gap-2 font-medium">
+                    <Check size={14} /> Pending
+                  </button>
+                ) : (
+                  <MagneticButton variant="ghost" className="!px-4 !py-2 text-xs flex-1" onClick={() => handleConnect(p.id)}>Connect</MagneticButton>
+                )}
+                <MagneticButton className="!px-4 !py-2 text-xs flex-1" onClick={() => navigate('/app/chat')}>Message</MagneticButton>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
