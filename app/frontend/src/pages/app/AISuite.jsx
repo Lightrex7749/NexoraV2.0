@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2 } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 import { GlassCard, Overline, MagneticButton } from '../../components/ui/primitives';
-import { VALIDATION_MOCK, BUSINESS_PLAN_SECTIONS, ROADMAP } from '../../mock/data';
+import { BUSINESS_PLAN_SECTIONS, ROADMAP } from '../../mock/data';
 
 const TABS = [
   { id: 'validation', label: 'Idea Validation' },
@@ -15,10 +17,23 @@ export default function AISuite() {
   const [tab, setTab] = useState('validation');
   const [status, setStatus] = useState('idle'); // idle | running | done
   const [idea, setIdea] = useState('An agentic checkout assistant for mid-market Shopify brands.');
+  const [validationData, setValidationData] = useState(null);
 
-  const run = () => {
+  const run = async () => {
+    if (!idea || idea.trim().length < 10) {
+      toast.error("Please enter a more detailed idea.");
+      return;
+    }
     setStatus('running');
-    setTimeout(() => setStatus('done'), 1800);
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/ai/validate-idea`, { idea });
+      setValidationData(res.data.data);
+      setStatus('done');
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.detail || "AI Validation Failed");
+      setStatus('idle');
+    }
   };
 
   return (
@@ -47,18 +62,18 @@ export default function AISuite() {
           </div>
 
           <AnimatePresence>
-            {status === 'done' && (
+            {status === 'done' && validationData && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-10 space-y-6">
                 <div className="flex items-center gap-8">
                   <div>
                     <div className="text-xs text-zinc-500 uppercase tracking-widest">Score</div>
-                    <div className="font-display text-7xl font-semibold gradient-text tracking-tighter">{VALIDATION_MOCK.score}</div>
+                    <div className="font-display text-7xl font-semibold gradient-text tracking-tighter">{validationData.score}</div>
                   </div>
                   <div className="flex-1 h-px bg-white/[0.06]" />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
-                  {Object.entries(VALIDATION_MOCK.swot).map(([k, v]) => (
+                  {Object.entries(validationData.swot || {}).map(([k, v]) => (
                     <div key={k} className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
                       <div className="text-xs font-bold uppercase tracking-widest text-emerald-500 mb-3">{k}</div>
                       <ul className="space-y-2">
@@ -71,7 +86,7 @@ export default function AISuite() {
                 <div>
                   <div className="text-xs font-bold uppercase tracking-widest text-emerald-500 mb-3">Risks</div>
                   <div className="space-y-2">
-                    {VALIDATION_MOCK.risks.map(r => (
+                    {(validationData.risks || []).map(r => (
                       <div key={r.label} className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.05] flex items-center gap-3">
                         <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${r.level === 'High' ? 'bg-red-500/20 text-red-400' : r.level === 'Medium' ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'}`}>{r.level}</span>
                         <span className="text-sm text-zinc-300">{r.label}</span>
@@ -83,7 +98,7 @@ export default function AISuite() {
                 <div>
                   <div className="text-xs font-bold uppercase tracking-widest text-emerald-500 mb-3">Suggestions</div>
                   <ul className="space-y-2">
-                    {VALIDATION_MOCK.suggestions.map(x => <li key={x} className="text-sm text-zinc-300 flex items-start gap-2"><span className="text-emerald-500 mt-0.5">→</span>{x}</li>)}
+                    {(validationData.suggestions || []).map(x => <li key={x} className="text-sm text-zinc-300 flex items-start gap-2"><span className="text-emerald-500 mt-0.5">→</span>{x}</li>)}
                   </ul>
                 </div>
               </motion.div>

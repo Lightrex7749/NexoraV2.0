@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 
 // Import Routes
 import systemRoutes from './routes/systemRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, '.env') });
@@ -36,6 +37,7 @@ mongoose.connect(mongoUrl, { dbName })
 
 // Mount Routes
 app.use('/api', systemRoutes);
+app.use('/api/ai', aiRoutes);
 // Additional routes will be mounted here as they are developed
 // e.g. app.use('/api/v1/auth', authRoutes);
 // e.g. app.use('/api/v1/startups', startupRoutes);
