@@ -1,5 +1,5 @@
 import { validateIdea } from '../services/aiService.js';
-import { AIReport } from '../models/AIReport.js'; // Assuming we want to keep a record, even if we don't strictly require it yet.
+import AIReport from '../models/AIReport.js'; // Assuming we want to keep a record, even if we don't strictly require it yet.
 
 export const runValidation = async (req, res) => {
   try {

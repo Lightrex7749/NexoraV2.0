@@ -8,6 +8,12 @@ import { fileURLToPath } from 'url';
 // Import Routes
 import systemRoutes from './routes/systemRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import startupRoutes from './routes/startupRoutes.js';
+import communityRoutes from './routes/communityRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
+import documentRoutes from './routes/documentRoutes.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, '.env') });
@@ -38,6 +44,12 @@ mongoose.connect(mongoUrl, { dbName })
 // Mount Routes
 app.use('/api', systemRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/startups', startupRoutes);
+app.use('/api/community', communityRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/documents', documentRoutes);
 // Additional routes will be mounted here as they are developed
 // e.g. app.use('/api/v1/auth', authRoutes);
 // e.g. app.use('/api/v1/startups', startupRoutes);

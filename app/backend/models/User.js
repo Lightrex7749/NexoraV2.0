@@ -8,7 +8,24 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ['founder', 'mentor', 'investor', 'admin', 'user'], default: 'user' },
     avatarUrl: String,
     bio: String,
+    headline: String,
     location: String,
+    industry: String,
+    resumeUrl: String,
+    skills: [String],
+    interests: [String],
+    workExperience: [{
+      company: String,
+      role: String,
+      startDate: Date,
+      endDate: Date,
+      description: String
+    }],
+    projects: [{
+      name: String,
+      url: String,
+      description: String
+    }],
     isActive: { type: Boolean, default: true },
     lastLoginAt: Date,
     isVerified: { type: Boolean, default: false },

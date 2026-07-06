@@ -8,6 +8,7 @@ const startupSchema = new mongoose.Schema(
     founder: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'StartupCategory' },
     stage: { type: String, enum: ['idea', 'validation', 'growth', 'scale'], default: 'idea' },
+    feature: String,
     website: String,
     logoUrl: String,
     isPublished: { type: Boolean, default: false },

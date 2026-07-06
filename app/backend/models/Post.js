@@ -6,6 +6,7 @@ const postSchema = new mongoose.Schema(
     startup: { type: mongoose.Schema.Types.ObjectId, ref: 'Startup' },
     content: { type: String, required: true },
     imageUrl: String,
+    attachmentUrl: String,
     visibility: { type: String, enum: ['public', 'private'], default: 'public' },
     createdAt: { type: Date, default: Date.now }
   },

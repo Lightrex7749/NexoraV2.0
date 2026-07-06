@@ -9,11 +9,11 @@ import StartupCategory from '../models/StartupCategory.js';
 import MarketInsight from '../models/MarketInsight.js';
 import Idea from '../models/Idea.js';
 
-dotenv.config();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const sampleDataDir = path.join(__dirname, '..', 'sample-data');
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
+
+const sampleDataDir = path.join(__dirname, '..', '..', '..', 'nexora', 'nexora-database', 'sample-data');
 
 const loadJson = (fileName) => {
   const filePath = path.join(sampleDataDir, fileName);
@@ -27,6 +27,10 @@ const seedFromSampleData = async () => {
   const startups = loadJson('startups.json');
   const marketInsights = loadJson('marketInsights.json');
   const ideas = loadJson('ideas.json');
+
+  // also investments and events if needed later
+
+  try { await Idea.collection.dropIndexes(); } catch (e) {}
 
   await User.deleteMany({});
   await Startup.deleteMany({});
