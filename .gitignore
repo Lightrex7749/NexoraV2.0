@@ -25,3 +25,5 @@ Thumbs.db
 
 # Cache
 node_modules/.cache/
+# Don't track nested git repo metadata
+app/frontend/.git/
