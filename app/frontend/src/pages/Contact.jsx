@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { SectionLabel, MagneticButton } from '../components/ui/primitives';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { NavLink, Link, useLocation, Outlet } from 'react-router-dom';
+import { NavLink, Link, useLocation, Outlet,useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard, Rocket, Users, MessageSquare, Sparkles, TrendingUp, Briefcase,
-  UserCircle, Bell, Search, Settings, Compass, Building2, Award, ShieldCheck, ChevronDown
+  UserCircle, Bell, Search, Settings, Compass, Building2, Award, ShieldCheck, ChevronDown, LogOut
 } from 'lucide-react';
+import { getUser,signOut } from '../../lib/auth';
 import { CURRENT_USER, NOTIFICATIONS } from '../../mock/data';
+
 
 const NAV = [
   { to: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -28,13 +30,26 @@ const ROLE_NAV = {
 const ROLES = ['Founder', 'Mentor', 'Investor', 'Admin'];
 
 export default function AppShell() {
-  const [role, setRole] = useState('Founder');
+  const authedUser = getUser() || {};
+  const [role, setRole] = useState(authedUser.role || 'Founder');
   const [roleOpen, setRoleOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const roleExtras = ROLE_NAV[role] || [];
   const unread = NOTIFICATIONS.filter(n => n.unread).length;
 
+
+  const handleSignOut = () => {
+    signOut();
+    navigate('/', { replace: true });
+  };
+
+  const displayUser = {
+    name: authedUser.name || CURRENT_USER.name,
+    avatar: authedUser.avatar || CURRENT_USER.avatar,
+    headline: authedUser.headline || CURRENT_USER.headline,
+  };
   return (
     <div className="min-h-screen bg-ink-950 text-white">
       {/* Sidebar */}
@@ -92,13 +107,16 @@ export default function AppShell() {
 
         <div className="p-4 border-t border-white/[0.06]">
           <Link to="/app/profile" className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/[0.04] transition-colors" data-testid="profile-link">
-            <img src={CURRENT_USER.avatar} alt="me" className="w-9 h-9 rounded-full object-cover" />
+            <img src={displayUser.avatar} alt="me" className="w-9 h-9 rounded-full object-cover" />
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate">{CURRENT_USER.name}</div>
-              <div className="text-xs text-zinc-500 truncate">{CURRENT_USER.headline}</div>
+              <div className="text-sm font-medium truncate">{displayUser.name}</div>
+              <div className="text-xs text-zinc-500 truncate">{displayUser.headline}</div>
             </div>
             <Settings size={14} className="text-zinc-500" />
           </Link>
+          <button onClick={handleSignOut} className="mt-2 w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-zinc-500 hover:text-white hover:bg-white/[0.04] transition-colors" data-testid="sign-out-btn">
+          <LogOut size={13} /> Sign out
+        </button>
         </div>
       </aside>
 

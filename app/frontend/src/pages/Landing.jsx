@@ -12,7 +12,7 @@ import { PRICING, FAQ, SUCCESS_STORIES } from '../mock/data';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 const JOURNEY = [
   { step: '01', label: 'Idea', body: 'Capture the raw signal. Nexora structures it into a testable thesis.' },
@@ -109,7 +109,7 @@ function Hero() {
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3 }}
             className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:justify-end"
           >
-            <MagneticButton href="/app/dashboard" data-testid="hero-cta-primary">
+            <MagneticButton href="/register" data-testid="hero-cta-primary">
               Launch Nexora <ArrowUpRight size={18} />
             </MagneticButton>
             <MagneticButton href="#journey" variant="ghost" data-testid="hero-cta-secondary">
@@ -205,7 +205,7 @@ function Journey() {
         </h2>
       </div>
 
-      <div ref={trackRef} className="absolute top-0 left-0 h-full flex items-center gap-8 pl-[10vw] pr-[10vw]">
+      <div ref={trackRef} className="absolute top-0 left-0 h-full flex items-end pb-16 md:pb-24 gap-8 pl-[10vw] pr-[10vw]">
         {JOURNEY.map((j, i) => (
           <div key={j.step} className="min-w-[70vw] md:min-w-[42vw] h-[62vh]">
             <GlassCard className="h-full p-10 flex flex-col justify-between">
@@ -401,7 +401,7 @@ function PricingSection() {
                 ))}
               </ul>
               <MagneticButton
-                href="/app/dashboard"
+                href="/register"
                 variant={p.highlighted ? 'primary' : 'ghost'}
                 data-testid={`pricing-cta-${p.name.toLowerCase()}`}
               >
@@ -500,7 +500,7 @@ function FinalCTA() {
           </MagneticButton>
         </form>
 
-        <MagneticButton href="/app/dashboard" variant="ghost" data-testid="final-launch-btn">
+        <MagneticButton href="/register" variant="ghost" data-testid="final-launch-btn">
           Or launch the demo →
         </MagneticButton>
       </div>

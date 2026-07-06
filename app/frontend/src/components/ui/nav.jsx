@@ -55,8 +55,8 @@ export function PublicNavbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link to="/app/dashboard" className="text-sm text-zinc-400 hover:text-white transition-colors" data-testid="signin-link">Sign in</Link>
-          <MagneticButton href="/app/dashboard" data-testid="launch-app-btn" className="!px-5 !py-2.5 text-sm">
+          <Link to="/login" className="text-sm text-zinc-400 hover:text-white transition-colors" data-testid="signin-link">Sign in</Link>
+          <MagneticButton href="/register" data-testid="launch-app-btn" className="!px-5 !py-2.5 text-sm">
             Launch app →
           </MagneticButton>
         </div>
@@ -81,7 +81,8 @@ export function PublicNavbar() {
                 </Link>
               ))}
               <div className="divider-line" />
-              <Link to="/app/dashboard" className="text-emerald-400" data-testid="m-launch-link">Launch app →</Link>
+              <Link to="/login" className="text-zinc-300" data-testid="m-signin-link">Sign in</Link>
+            <Link to="/register" className="text-emerald-400" data-testid="m-launch-link">Launch app →</Link>
             </div>
           </motion.div>
         )}
