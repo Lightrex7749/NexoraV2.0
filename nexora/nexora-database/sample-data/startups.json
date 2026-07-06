@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Nexora Lab",
+    "tagline": "Building smarter startup operations",
+    "description": "Nexora provides AI-powered tools for startup founders to manage operations, teams, and growth.",
+    "founder": "507f1f77bcf86cd799439011",
+    "category": "507f1f77bcf86cd799439091",
+    "stage": "growth",
+    "isPublished": true,
+    "website": "https://nexora.example.com",
+    "createdAt": "2023-06-01T08:00:00Z",
+    "feature": "AI-powered founder operations dashboard"
+  },
+  {
+    "name": "DataFlow AI",
+    "tagline": "Real-time data pipeline for enterprises",
+    "description": "Enterprise data integration platform using ML for data quality and processing.",
+    "founder": "507f1f77bcf86cd799439012",
+    "category": "507f1f77bcf86cd799439092",
+    "stage": "growth",
+    "isPublished": true,
+    "website": "https://dataflow.example.com",
+    "createdAt": "2023-03-15T10:20:00Z",
+    "feature": "Real-time anomaly detection"
+  },
+  {
+    "name": "HealthSync",
+    "tagline": "Patient-doctor communication platform",
+    "description": "HIPAA-compliant telemedicine and health records platform.",
+    "founder": "507f1f77bcf86cd799439013",
+    "category": "507f1f77bcf86cd799439093",
+    "stage": "validation",
+    "isPublished": true,
+    "website": "https://healthsync.example.com",
+    "createdAt": "2024-01-10T12:00:00Z",
+    "feature": "Secure video consultations"
+  },
+  {
+    "name": "EcoTrack",
+    "tagline": "Carbon footprint tracking for businesses",
+    "description": "Supply chain analytics and ESG reporting platform for enterprises.",
+    "founder": "507f1f77bcf86cd799439014",
+    "category": "507f1f77bcf86cd799439094",
+    "stage": "growth",
+    "isPublished": true,
+    "website": "https://ecotrack.example.com",
+    "createdAt": "2022-09-20T14:30:00Z",
+    "feature": "ESG reporting automation"
+  },
+  {
+    "name": "LearnAI Academy",
+    "tagline": "Personalized online learning with AI",
+    "description": "EdTech platform using adaptive learning algorithms for personalized education.",
+    "founder": "507f1f77bcf86cd799439015",
+    "category": "507f1f77bcf86cd799439095",
+    "stage": "scale",
+    "isPublished": true,
+    "website": "https://learnai.example.com",
+    "createdAt": "2022-07-05T09:50:00Z",
+    "feature": "Adaptive learning paths"
+  }
+]

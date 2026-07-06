@@ -1,0 +1,139 @@
+[
+  {
+    "title": "AI Innovation Hackathon 2026",
+    "description": "A 48-hour hackathon focused on building AI-powered solutions for real-world problems. Teams will collaborate, innovate, and pitch their ideas to investor judges.",
+    "organizer": "507f1f77bcf86cd799439011",
+    "eventType": "Hackathon",
+    "mode": "Hybrid",
+    "location": "Tech Hub, San Francisco",
+    "meetingLink": "https://meet.example.com/ai-hackathon-2026",
+    "startDate": "2026-08-15T09:00:00Z",
+    "endDate": "2026-08-17T18:00:00Z",
+    "maxParticipants": 200,
+    "participants": [
+      "507f1f77bcf86cd799439012",
+      "507f1f77bcf86cd799439013",
+      "507f1f77bcf86cd799439014",
+      "507f1f77bcf86cd799439015"
+    ],
+    "status": "Upcoming"
+  },
+  {
+    "title": "Startup Founders Workshop: Go-to-Market Strategy",
+    "description": "Learn proven strategies for launching and scaling your startup. Expert speakers will share insights on market entry, customer acquisition, and growth hacking.",
+    "organizer": "507f1f77bcf86cd799439016",
+    "eventType": "Workshop",
+    "mode": "Online",
+    "meetingLink": "https://zoom.example.com/gtm-workshop",
+    "startDate": "2026-07-22T14:00:00Z",
+    "endDate": "2026-07-22T17:00:00Z",
+    "maxParticipants": 100,
+    "participants": [
+      "507f1f77bcf86cd799439017",
+      "507f1f77bcf86cd799439018",
+      "507f1f77bcf86cd799439019"
+    ],
+    "status": "Upcoming"
+  },
+  {
+    "title": "Tech Demo Day Q3 2026",
+    "description": "Showcase your product to investors, partners, and the tech community. Demo Day features 20 selected startups pitching their latest innovations.",
+    "organizer": "507f1f77bcf86cd799439011",
+    "eventType": "Demo Day",
+    "mode": "Offline",
+    "location": "Convention Center, New York",
+    "startDate": "2026-09-10T18:00:00Z",
+    "endDate": "2026-09-10T21:00:00Z",
+    "maxParticipants": 300,
+    "participants": [
+      "507f1f77bcf86cd799439020",
+      "507f1f77bcf86cd799439021",
+      "507f1f77bcf86cd799439022",
+      "507f1f77bcf86cd799439023"
+    ],
+    "status": "Upcoming"
+  },
+  {
+    "title": "Pitch Day: Series A Ready Startups",
+    "description": "A specialized pitch event for Series A-ready startups. Connect with tier-1 VCs and institutional investors looking for growth-stage opportunities.",
+    "organizer": "507f1f77bcf86cd799439024",
+    "eventType": "Pitch Day",
+    "mode": "Hybrid",
+    "location": "Venture Capital Hub, Silicon Valley",
+    "meetingLink": "https://meet.example.com/pitch-day-seriesA",
+    "startDate": "2026-08-28T10:00:00Z",
+    "endDate": "2026-08-28T17:00:00Z",
+    "maxParticipants": 50,
+    "participants": [
+      "507f1f77bcf86cd799439025",
+      "507f1f77bcf86cd799439026"
+    ],
+    "status": "Upcoming"
+  },
+  {
+    "title": "Startup Networking Mixer - July",
+    "description": "Casual networking event for founders, mentors, and investors. Great opportunity to make new connections and discuss collaboration opportunities.",
+    "organizer": "507f1f77bcf86cd799439011",
+    "eventType": "Networking",
+    "mode": "Offline",
+    "location": "Downtown Lounge, Seattle",
+    "startDate": "2026-07-18T18:00:00Z",
+    "endDate": "2026-07-18T20:00:00Z",
+    "maxParticipants": 150,
+    "participants": [
+      "507f1f77bcf86cd799439027",
+      "507f1f77bcf86cd799439028",
+      "507f1f77bcf86cd799439029"
+    ],
+    "status": "Live"
+  },
+  {
+    "title": "Mentorship Session: Product-Market Fit",
+    "description": "One-on-one mentorship focused on achieving and validating product-market fit. Learn from experienced founders and product leaders.",
+    "organizer": "507f1f77bcf86cd799439030",
+    "eventType": "Mentorship",
+    "mode": "Online",
+    "meetingLink": "https://calendly.example.com/mentor-pmf",
+    "startDate": "2026-07-20T15:00:00Z",
+    "endDate": "2026-07-20T16:00:00Z",
+    "maxParticipants": 1,
+    "participants": [
+      "507f1f77bcf86cd799439031"
+    ],
+    "status": "Upcoming"
+  },
+  {
+    "title": "HealthTech Innovation Summit 2026",
+    "description": "Industry conference bringing together healthcare innovators, investors, and policy makers. Keynotes, panel discussions, and networking opportunities.",
+    "organizer": "507f1f77bcf86cd799439032",
+    "eventType": "Workshop",
+    "mode": "Hybrid",
+    "location": "Medical Convention Center, Boston",
+    "meetingLink": "https://stream.example.com/healthtech-summit",
+    "startDate": "2026-10-12T08:00:00Z",
+    "endDate": "2026-10-14T17:00:00Z",
+    "maxParticipants": 500,
+    "participants": [
+      "507f1f77bcf86cd799439033",
+      "507f1f77bcf86cd799439034",
+      "507f1f77bcf86cd799439035"
+    ],
+    "status": "Upcoming"
+  },
+  {
+    "title": "Q2 2026 Investor Meetup",
+    "description": "Regular meetup for angel investors and VCs to discuss market trends, deal flow, and investment strategies. Closed event for accredited investors.",
+    "organizer": "507f1f77bcf86cd799439036",
+    "eventType": "Networking",
+    "mode": "Offline",
+    "location": "Investors Club, Singapore",
+    "startDate": "2026-06-30T19:00:00Z",
+    "endDate": "2026-06-30T21:00:00Z",
+    "maxParticipants": 75,
+    "participants": [
+      "507f1f77bcf86cd799439037",
+      "507f1f77bcf86cd799439038"
+    ],
+    "status": "Completed"
+  }
+]

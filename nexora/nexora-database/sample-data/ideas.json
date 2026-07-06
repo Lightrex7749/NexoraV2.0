@@ -1,0 +1,50 @@
+[
+  {
+    "title": "AI-powered founder assistant",
+    "description": "A tool to help founders manage tasks and meet deadlines using natural language processing.",
+    "author": "507f1f77bcf86cd799439011",
+    "tags": ["AI", "productivity", "founder-tools"],
+    "status": "draft",
+    "createdAt": "2024-02-01T10:00:00Z"
+  },
+  {
+    "title": "Sustainable packaging marketplace",
+    "description": "B2B marketplace connecting businesses with eco-friendly packaging suppliers.",
+    "author": "507f1f77bcf86cd799439014",
+    "tags": ["e-commerce", "sustainability", "B2B"],
+    "status": "validated",
+    "createdAt": "2024-01-28T14:22:00Z"
+  },
+  {
+    "title": "AI code review automation",
+    "description": "Automated code review tool that suggests improvements and catches bugs using ML.",
+    "author": "507f1f77bcf86cd799439012",
+    "tags": ["developer-tools", "AI", "automation"],
+    "status": "in-progress",
+    "createdAt": "2024-02-05T11:15:00Z"
+  },
+  {
+    "title": "Mental health chatbot for teens",
+    "description": "AI-powered mental health support chatbot designed for teenagers with professional oversight.",
+    "author": "507f1f77bcf86cd799439013",
+    "tags": ["healthtech", "AI", "mental-health"],
+    "status": "validated",
+    "createdAt": "2024-01-20T09:30:00Z"
+  },
+  {
+    "title": "Smart inventory management",
+    "description": "IoT and ML-based inventory system that predicts demand and optimizes stock levels.",
+    "author": "507f1f77bcf86cd799439015",
+    "tags": ["supply-chain", "IoT", "ML"],
+    "status": "draft",
+    "createdAt": "2024-02-10T16:45:00Z"
+  },
+  {
+    "title": "Blockchain-based credential verification",
+    "description": "Decentralized platform for verifying educational and professional credentials.",
+    "author": "507f1f77bcf86cd799439016",
+    "tags": ["blockchain", "credentials", "education"],
+    "status": "in-progress",
+    "createdAt": "2024-01-15T13:20:00Z"
+  }
+]
