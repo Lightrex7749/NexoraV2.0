@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Ava Chen",
+    "email": "ava@example.com",
+    "passwordHash": "demo-hash",
+    "role": "founder",
+    "bio": "Serial entrepreneur with 10+ years in SaaS",
+    "location": "San Francisco, CA",
+    "createdAt": "2024-01-15T10:30:00Z"
+  },
+  {
+    "name": "James Rodriguez",
+    "email": "james@example.com",
+    "passwordHash": "demo-hash",
+    "role": "investor",
+    "bio": "Venture capitalist focusing on AI startups",
+    "location": "New York, NY",
+    "createdAt": "2024-02-20T14:22:00Z"
+  },
+  {
+    "name": "Priya Patel",
+    "email": "priya@example.com",
+    "passwordHash": "demo-hash",
+    "role": "mentor",
+    "bio": "Product strategist and startup advisor",
+    "location": "Austin, TX",
+    "createdAt": "2024-01-05T09:15:00Z"
+  },
+  {
+    "name": "Michael Thompson",
+    "email": "michael@example.com",
+    "passwordHash": "demo-hash",
+    "role": "founder",
+    "bio": "DevOps engineer turned entrepreneur",
+    "location": "Seattle, WA",
+    "createdAt": "2024-03-10T11:45:00Z"
+  },
+  {
+    "name": "Sarah Kim",
+    "email": "sarah@example.com",
+    "passwordHash": "demo-hash",
+    "role": "investor",
+    "bio": "Early stage investor, ex-Google engineer",
+    "location": "Palo Alto, CA",
+    "createdAt": "2024-01-25T16:30:00Z"
+  }
+]

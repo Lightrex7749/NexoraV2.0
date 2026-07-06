@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Nexora Labs",
+    "tagline": "Building smarter startup operations",
+    "description": "Nexora provides AI-powered tools for startup founders to manage operations, teams, and growth.",
+    "stage": "growth",
+    "isPublished": true,
+    "foundedDate": "2023-06-01",
+    "industry": "SaaS",
+    "website": "https://nexora.example.com",
+    "createdAt": "2023-06-01T08:00:00Z"
+  },
+  {
+    "name": "DataFlow AI",
+    "tagline": "Real-time data pipeline for enterprises",
+    "description": "Enterprise data integration platform using ML for data quality and processing.",
+    "stage": "growth",
+    "isPublished": true,
+    "foundedDate": "2023-03-15",
+    "industry": "Data & Analytics",
+    "website": "https://dataflow.example.com",
+    "createdAt": "2023-03-15T10:20:00Z"
+  },
+  {
+    "name": "HealthSync",
+    "tagline": "Patient-doctor communication platform",
+    "description": "HIPAA-compliant telemedicine and health records platform.",
+    "stage": "validation",
+    "isPublished": true,
+    "foundedDate": "2024-01-10",
+    "industry": "HealthTech",
+    "website": "https://healthsync.example.com",
+    "createdAt": "2024-01-10T12:00:00Z"
+  },
+  {
+    "name": "EcoTrack",
+    "tagline": "Carbon footprint tracking for businesses",
+    "description": "Supply chain analytics and ESG reporting platform for enterprises.",
+    "stage": "growth",
+    "isPublished": true,
+    "foundedDate": "2022-09-20",
+    "industry": "GreenTech",
+    "website": "https://ecotrack.example.com",
+    "createdAt": "2022-09-20T14:30:00Z"
+  },
+  {
+    "name": "LearnAI Academy",
+    "tagline": "Personalized online learning with AI",
+    "description": "EdTech platform using adaptive learning algorithms for personalized education.",
+    "stage": "scale",
+    "isPublished": true,
+    "foundedDate": "2023-05-05",
+    "industry": "EdTech",
+    "website": "https://learnai.example.com",
+    "createdAt": "2023-05-05T09:45:00Z"
+  }
+]
