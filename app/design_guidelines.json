@@ -1,0 +1,171 @@
+{
+  "theme": "dark",
+  "archetype": "5 (Luxury) mixed with 4 (Swiss & High Contrast)",
+  "emotional_tone": "Cinematic, premium, tactile, authoritative, futuristic but grounded. Feels like physical glass in a dark room with a warm ambient light.",
+  "typography": {
+    "fonts": [
+      {
+        "name": "Clash Display",
+        "type": "heading",
+        "import_url": "https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap",
+        "css_variable": "--font-clash",
+        "tailwind_class": "font-display"
+      },
+      {
+        "name": "Satoshi",
+        "type": "body",
+        "import_url": "https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap",
+        "css_variable": "--font-satoshi",
+        "tailwind_class": "font-sans"
+      }
+    ],
+    "hierarchy": {
+      "h1": "text-5xl md:text-7xl lg:text-8xl font-display font-semibold tracking-tighter leading-[0.9]",
+      "h2": "text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-tight leading-none",
+      "h3": "text-2xl md:text-3xl font-display font-medium tracking-tight",
+      "body_lg": "text-lg md:text-xl font-sans font-light text-zinc-400 leading-relaxed",
+      "body": "text-base font-sans text-zinc-400 leading-relaxed",
+      "overline": "text-xs font-sans font-bold tracking-[0.2em] uppercase text-emerald-500"
+    }
+  },
+  "colors": {
+    "background": {
+      "base": "#0A0A0C",
+      "elevated": "#111114",
+      "surface": "rgba(255, 255, 255, 0.03)"
+    },
+    "text": {
+      "primary": "#FAFAFA",
+      "secondary": "#A1A1AA",
+      "tertiary": "#52525B"
+    },
+    "accent": {
+      "primary": "#10B981",
+      "secondary": "#F59E0B",
+      "gradient": "linear-gradient(135deg, #10B981 0%, #F59E0B 100%)",
+      "gradient_tailwind": "bg-gradient-to-br from-emerald-500 to-amber-500"
+    },
+    "border": {
+      "subtle": "rgba(255, 255, 255, 0.06)",
+      "strong": "rgba(255, 255, 255, 0.15)"
+    }
+  },
+  "motion_and_interaction": {
+    "global": {
+      "smooth_scroll": "Lenis must be implemented at the root level for butter-smooth momentum scrolling.",
+      "page_transition": "Initial black screen loader that slides up after a split-text reveal of 'NEXORA'.",
+      "custom_cursor": "Dot + Ring custom cursor following the mouse, built with Framer Motion. Blends with background using mix-blend-mode: difference."
+    },
+    "micro_interactions": {
+      "magnetic_buttons": "Primary CTAs must use Framer Motion useMotionValue and useSpring to create a magnetic pull effect when hovered.",
+      "hover_states": "Glassy cards must feature a soft, diagonal light sweep (specular highlight) on hover, tracked by mouse position. Do NOT use default scale transforms.",
+      "reveal": "All sections must fade in and slide up slightly (GSAP ScrollTrigger or Framer Motion whileInView)."
+    }
+  },
+  "surface_styles": {
+    "glassmorphism_card": "bg-white/[0.02] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-2xl relative overflow-hidden",
+    "grain_overlay": "A fixed full-screen div with pointer-events-none and an SVG noise background, opacity 0.4, mix-blend-mode overlay to give a tactile, physical film grain feel."
+  },
+  "sections": [
+    {
+      "name": "Intro & Hero",
+      "design_rules": "Full height (100vh). Features a subtle animated mesh gradient background (emerald/amber blurred heavily in the deep background). Headline uses split-text animation (each character animates up). Huge typography. 'Idea to Impact' subheadline. Magnetic primary CTA button.",
+      "components_needed": ["AnimatedGradientBg", "SplitTextHeadline", "MagneticButton"]
+    },
+    {
+      "name": "Marquee Strip",
+      "design_rules": "Infinite horizontal scroll strip built with react-fast-marquee. Text: 'BUILT FOR FOUNDERS • MENTORS • INVESTORS • SCALABLE AI'. Font: Clash Display, large, transparent with 1px white stroke (text-stroke).",
+      "components_needed": ["FastMarquee"]
+    },
+    {
+      "name": "Idea to Impact Journey (Horizontal Scroll)",
+      "design_rules": "CRITICAL: This section pins on scroll. The user scrolls down, but the content moves horizontally from left to right. Steps: Idea -> Validation -> MVP -> Launch -> Growth -> Funding. Use GSAP ScrollTrigger + pin: true.",
+      "components_needed": ["HorizontalScrollContainer", "JourneyCard"]
+    },
+    {
+      "name": "Feature Showcase (Bento/Alternating)",
+      "design_rules": "Bento box or alternating left/right layout. Features: Idea Validation, Business Plan AI, Team Builder, Mentorship, Investor Matching, Market Insights. High-end glassmorphic cards with glossy hover effects.",
+      "components_needed": ["GlossyCard", "HoverLightSweep"]
+    },
+    {
+      "name": "Editorial 'How it Works'",
+      "design_rules": "David-Whyte style. Massive whitespace. Sticky left column with large text 'The Architecture of Impact'. Right column scrolls through beautiful editorial images and brief paragraphs.",
+      "components_needed": ["StickyColumnLayout"]
+    },
+    {
+      "name": "Startup Showcase",
+      "design_rules": "Draggable/momentum-based carousel (Framer Motion drag='x'). Shows dashboard snippets and founder photos.",
+      "components_needed": ["DraggableCarousel"]
+    },
+    {
+      "name": "Testimonials",
+      "design_rules": "A sleek card stack effect or horizontal drag. Editorial portraits, elegant typography for quotes.",
+      "components_needed": ["TestimonialStack"]
+    },
+    {
+      "name": "Pricing",
+      "design_rules": "Monthly/Yearly toggle. When toggled, the numbers must roll/morph (Framer Motion AnimatePresence). Glass cards, one 'Pro' card highlighted with an emerald-to-gold border glow.",
+      "components_needed": ["PricingToggle", "NumberMorph", "PricingCard"]
+    },
+    {
+      "name": "FAQ",
+      "design_rules": "Clean, minimal accordion. 1px bottom border for items. Smooth height animation on open.",
+      "components_needed": ["Accordion"]
+    },
+    {
+      "name": "Final CTA",
+      "design_rules": "Full bleed section. Dark background heavily illuminated by a radial emerald/gold glow. Massive 'Start Your Journey' text. Magnetic CTA.",
+      "components_needed": ["RadialGlowSection"]
+    },
+    {
+      "name": "Footer",
+      "design_rules": "Subtle parallax reveal (footer sits underneath the last section, revealed as user scrolls to bottom). Massive 'NEXORA' logo text, minimal links.",
+      "components_needed": ["ParallaxFooter"]
+    }
+  ],
+  "media": {
+    "hero_textures": [
+      {
+        "url": "https://images.unsplash.com/photo-1548362851-ea052637ad64?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGNpbmVtYXRpYyUyMGRhcmslMjBnbGFzcyUyMHRleHR1cmUlMjBlbWVyYWxkJTIwZ29sZHxlbnwwfHx8fDE3ODMyMzg3NTR8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract dark glass texture for hero background overlay"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1567919915541-dd35562ae895?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMGNpbmVtYXRpYyUyMGRhcmslMjBnbGFzcyUyMHRleHR1cmUlMjBlbWVyYWxkJTIwZ29sZHxlbnwwfHx8fDE3ODMyMzg3NTR8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Wet glass texture for subtle noise/tactile feel"
+      }
+    ],
+    "dashboard_snippets": [
+      {
+        "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwxfHxwcmVtaXVtJTIwbWluaW1hbCUyMGRhc2hib2FyZCUyMHVpJTIwZGFyayUyMG1vZGV8ZW58MHx8fHwxNzgzMjM4NzU1fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Premium minimal dashboard UI for Feature Showcase"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1666027092835-7e668416b7c8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwzfHxwcmVtaXVtJTIwbWluaW1hbCUyMGRhc2hib2FyZCUyMHVpJTIwZGFyayUyMG1vZGV8ZW58MHx8fHwxNzgzMjM4NzU1fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Dark mode interface snippet for Startup Showcase"
+      }
+    ],
+    "founder_portraits": [
+      {
+        "url": "https://images.unsplash.com/photo-1542190891-2093d38760f2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHw0fHxlZGl0b3JpYWwlMjBzdGFydHVwJTIwZm91bmRlciUyMHBvcnRyYWl0fGVufDB8fHx8MTc4MzIzODc1NHww&ixlib=rb-4.1.0&q=85",
+        "description": "Editorial portrait for testimonials (grayscale)"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHwxfHxlZGl0b3JpYWwlMjBzdGFydHVwJTIwZm91bmRlciUyMHBvcnRyYWl0fGVufDB8fHx8MTc4MzIzODc1NHww&ixlib=rb-4.1.0&q=85",
+        "description": "Editorial portrait for success stories"
+      }
+    ]
+  },
+  "technical_instructions_to_main_agent": [
+    "1. FRAMEWORK: Use React, Tailwind CSS, Framer Motion, GSAP, and @studio-freight/react-lenis (or lenis). Do NOT use TypeScript. Files must be .jsx or .js.",
+    "2. TAILWIND CONFIG: Extend colors with the deep charcoal base (#0A0A0C). Add font families 'display': ['Clash Display', 'sans-serif'] and 'sans': ['Satoshi', 'sans-serif'].",
+    "3. FONTS: Import Clash Display and Satoshi from Fontshare via standard <link> tags in index.html.",
+    "4. GSAP PINNING: Use GSAP ScrollTrigger for the horizontal 'Idea to Impact' journey. Pin the container, animate xPercent based on scroll.",
+    "5. MAGNETIC BUTTONS: Implement custom magnetic buttons using framer-motion useMotionValue, useTransform, useSpring mapped to mouse coordinates.",
+    "6. CUSTOM CURSOR: Add a global fixed dot and ring cursor that tracks mouse position and uses mix-blend-mode: difference. Hide the default cursor in css.",
+    "7. GLOBAL GRAIN: Add a fixed full-screen pseudo-element or div with an SVG noise pattern, pointer-events-none, opacity ~0.04 to add a physical texture across the whole site.",
+    "8. ACCESSIBILITY: Add data-testid attributes to all buttons, links, and major sections.",
+    "9. AVOID: Do not use default HTML alerts. Do not use Inter or Space Grotesk. Do not use pure black (#000).",
+    "10. COMPONENT STRUCTURE: Modularize sections (Hero, Journey, Features, Pricing, etc.) into separate .jsx files to keep code clean."
+  ]
+}
+

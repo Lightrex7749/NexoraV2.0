@@ -1,0 +1,27 @@
+# Node
+node_modules/
+
+# Env files
+.env
+app/backend/.env
+
+# Python env
+.venv/
+
+# Build outputs
+build/
+dist/
+
+# Logs
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Cache
+node_modules/.cache/
