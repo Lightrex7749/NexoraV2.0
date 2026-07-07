@@ -1,0 +1,16 @@
+{
+  "name": "nexora",
+  "version": "1.0.0",
+  "description": "Nexora AI-Powered Startup Incubation Management Platform",
+  "scripts": {
+    "install:all": "npm install --prefix app/frontend && npm install --prefix app/backend",
+    "start:backend": "npm start --prefix app/backend",
+    "start:frontend": "npm start --prefix app/frontend",
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  },
+  "author": "Nexora Team",
+  "license": "MIT"
+}
