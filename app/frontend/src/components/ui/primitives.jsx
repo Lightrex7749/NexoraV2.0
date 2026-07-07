@@ -91,14 +91,14 @@ export function MagneticButton({ children, className = '', href, onClick, varian
   return <button type={type} onClick={onClick} className="inline-block">{inner}</button>;
 }
 
-export function GlassCard({ children, className = '', ...props }) {
+export function GlassCard({ children, className = '', contentClassName = '', ...props }) {
   return (
     <div
       className={`glass relative overflow-hidden group transition-transform duration-500 hover:-translate-y-1 ${className}`}
       {...props}
     >
       <span className="gloss-sweep" />
-      <div className="relative z-10">{children}</div>
+      <div className={`relative z-10 ${contentClassName}`}>{children}</div>
     </div>
   );
 }
