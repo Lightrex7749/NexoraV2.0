@@ -51,22 +51,7 @@ export function Grain() {
 }
 
 export function MagneticButton({ children, className = '', href, onClick, variant = 'primary', 'data-testid': testId, type = 'button' }) {
-  const ref = useRef(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 200, damping: 15 });
-  const sy = useSpring(y, { stiffness: 200, damping: 15 });
-
-  const handleMove = (e) => {
-    const el = ref.current; if (!el) return;
-    const r = el.getBoundingClientRect();
-    const mx = e.clientX - r.left - r.width / 2;
-    const my = e.clientY - r.top - r.height / 2;
-    x.set(mx * 0.25); y.set(my * 0.25);
-  };
-  const handleLeave = () => { x.set(0); y.set(0); };
-
-  const base = 'relative inline-flex items-center justify-center px-8 py-4 rounded-full font-medium tracking-tight overflow-hidden group transition-shadow';
+  const base = 'relative inline-flex items-center justify-center px-8 py-4 rounded-full font-medium tracking-tight overflow-hidden group transition-all duration-300 hover:scale-[1.02]';
   const styles = variant === 'primary'
     ? 'bg-accent-gradient text-black shadow-glow-emerald hover:shadow-[0_0_60px_rgba(16,185,129,0.4)]'
     : variant === 'ghost'
@@ -74,17 +59,12 @@ export function MagneticButton({ children, className = '', href, onClick, varian
       : 'bg-white text-black';
 
   const inner = (
-    <motion.span
-      ref={ref}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
-      style={{ x: sx, y: sy }}
+    <span
       className={`${base} ${styles} ${className}`}
       data-testid={testId}
     >
       <span className="relative z-10 flex items-center gap-2">{children}</span>
-      <span className="gloss-sweep" />
-    </motion.span>
+    </span>
   );
 
   if (href) return <a href={href} onClick={onClick} className="inline-block">{inner}</a>;
@@ -94,10 +74,9 @@ export function MagneticButton({ children, className = '', href, onClick, varian
 export function GlassCard({ children, className = '', contentClassName = '', ...props }) {
   return (
     <div
-      className={`glass relative overflow-hidden group transition-transform duration-500 hover:-translate-y-1 ${className}`}
+      className={`glass relative overflow-hidden ${className}`}
       {...props}
     >
-      <span className="gloss-sweep" />
       <div className={`relative z-10 ${contentClassName}`}>{children}</div>
     </div>
   );

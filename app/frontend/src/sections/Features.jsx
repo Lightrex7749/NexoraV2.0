@@ -44,15 +44,6 @@ const features = [
 const FeatureCard = ({ f, i }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const wrapperRef = useRef(null);
-
-  const onMouseMove = (e) => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
-    el.style.setProperty("--my", `${e.clientY - r.top}px`);
-  };
 
   return (
     <motion.div
@@ -61,16 +52,9 @@ const FeatureCard = ({ f, i }) => {
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
       className="group relative"
-      data-cursor="hover"
     >
       <div
-        ref={wrapperRef}
-        onMouseMove={onMouseMove}
-        className="glass relative overflow-hidden rounded-2xl p-8 md:p-10 h-full min-h-[300px] flex flex-col justify-between"
-        style={{
-          background:
-            "radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.06), transparent 40%), rgba(255,255,255,0.025)",
-        }}
+        className="glass relative overflow-hidden rounded-2xl p-8 md:p-10 h-full min-h-[300px] flex flex-col justify-between hover:bg-white/[0.05] transition-colors duration-300"
       >
         <div className={`absolute -top-20 -right-20 h-56 w-56 rounded-full bg-gradient-radial ${f.accent} blur-3xl opacity-70 pointer-events-none`} />
         <div>
