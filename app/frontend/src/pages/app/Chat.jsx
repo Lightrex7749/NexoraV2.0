@@ -81,14 +81,14 @@ export default function Chat() {
   const currentMsgs = msgs[active] || [];
 
   return (
-    <div className="space-y-6" data-testid="chat-page">
+    <div className="flex min-h-[calc(100dvh-8rem)] flex-col space-y-6" data-testid="chat-page">
       <Overline>Chat</Overline>
       <h1 className="font-display text-4xl md:text-5xl font-medium tracking-tight">Live conversations.</h1>
 
-      <GlassCard className="!rounded-2xl overflow-hidden">
-        <div className="grid md:grid-cols-3 h-[600px]">
+      <GlassCard className="!rounded-2xl overflow-hidden flex-1 min-h-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 h-auto md:h-[calc(100dvh-16rem)] min-h-[520px] md:min-h-[350px]">
           {/* List */}
-          <div className="border-r border-white/[0.06] flex flex-col">
+          <div className="order-2 md:order-1 border-r border-white/[0.06] flex flex-col min-h-0">
             <div className="p-4 border-b border-white/[0.06]">
               <div className="relative">
                 <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
@@ -125,7 +125,7 @@ export default function Chat() {
           </div>
 
           {/* Thread */}
-          <div className="col-span-2 flex flex-col">
+          <div className="order-1 md:order-2 col-span-2 flex flex-col min-h-0">
             <div className="p-4 border-b border-white/[0.06] flex items-center gap-3">
               <img src={currentConv?.avatar} alt="" className="w-10 h-10 rounded-full object-cover" />
               <div>
@@ -133,7 +133,7 @@ export default function Chat() {
                 <div className="text-xs text-emerald-500">{currentConv?.role} • Online</div>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-4">
               {currentMsgs.map(m => (
                 <div key={m.id} className={`flex ${m.from === 'me' ? 'justify-end' : ''}`}>
                   <div className={`max-w-md px-4 py-3 rounded-2xl text-sm ${m.from === 'me' ? 'bg-accent-gradient text-black' : 'bg-white/[0.04] text-white'}`}>
@@ -154,13 +154,13 @@ export default function Chat() {
                 </div>
               ))}
             </div>
-            <form onSubmit={send} className="p-4 border-t border-white/[0.06] flex gap-2 items-center relative">
-              <label className={`cursor-pointer w-11 h-11 rounded-full flex items-center justify-center transition-colors ${attachment ? 'bg-emerald-500/20 text-emerald-500' : 'bg-white/[0.03] text-zinc-400 hover:text-emerald-400'}`}>
+            <form onSubmit={send} className="border-t border-white/[0.06] bg-ink-900/70 p-3 sm:p-4 flex gap-2 items-center relative">
+              <label className={`cursor-pointer w-11 h-11 rounded-full flex items-center justify-center transition-colors shrink-0 ${attachment ? 'bg-emerald-500/20 text-emerald-500' : 'bg-white/[0.05] text-zinc-400 hover:text-emerald-400'}`}>
                 {uploadingDoc ? <Loader2 size={16} className="animate-spin" /> : (attachment ? <Check size={16} /> : <Paperclip size={16} />)}
                 <input type="file" className="hidden" onChange={handleFileUpload} accept="*/*" disabled={uploadingDoc} />
               </label>
-              <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Type a message…" className="flex-1 bg-white/[0.03] rounded-full px-5 py-3 text-sm focus:outline-none" data-testid="chat-input" />
-              <button type="submit" className="w-11 h-11 rounded-full bg-accent-gradient flex items-center justify-center text-black" data-testid="chat-send"><Send size={16} /></button>
+              <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Type a message…" className="flex-1 min-w-0 rounded-full border border-white/[0.08] bg-white/[0.04] px-5 py-3 text-sm placeholder:text-zinc-500 focus:border-emerald-500/50 focus:outline-none" data-testid="chat-input" />
+              <button type="submit" className="w-11 h-11 rounded-full bg-accent-gradient flex items-center justify-center text-black shrink-0" data-testid="chat-send"><Send size={16} /></button>
             </form>
           </div>
         </div>
