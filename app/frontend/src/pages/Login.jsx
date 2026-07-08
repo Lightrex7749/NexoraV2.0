@@ -23,26 +23,38 @@ export default function Login({ mode = 'signin' }) {
     if (!email || !password) { toast.error('Email and password are required.'); return; }
     setLoading(true);
     setTimeout(() => {
-      const user = signIn({ name: isRegister ? name : email.split('@')[0], email, role });
-      toast.success(`Welcome, ${user.name}. Launching Nexora…`);
-      setLoading(false);
-      const to = location.state?.from || '/app/dashboard';
-      navigate(to, { replace: true });
+      try {
+        const user = signIn({ name: isRegister ? name : email.split('@')[0], email, role });
+        toast.success(`Welcome, ${user.name}. Launching Nexora…`);
+        setLoading(false);
+        const to = location.state?.from || '/app/dashboard';
+        navigate(to, { replace: true });
+      } catch (err) {
+        console.error('Login error:', err);
+        setLoading(false);
+        toast.error('An error occurred during login. Please try again.');
+      }
     }, 700);
   };
 
   const demoIn = (r) => {
     setLoading(true);
     setTimeout(() => {
-      signIn({ name: `${r} Demo`, email: `${r.toLowerCase()}@nexora.co`, role: r });
-      toast.success(`Signed in as ${r}.`);
-      navigate('/app/dashboard', { replace: true });
+      try {
+        signIn({ name: `${r} Demo`, email: `${r.toLowerCase()}@nexora.co`, role: r });
+        toast.success(`Signed in as ${r}.`);
+        navigate('/app/dashboard', { replace: true });
+      } catch (err) {
+        console.error('Demo login error:', err);
+        setLoading(false);
+        toast.error('An error occurred during demo login.');
+      }
     }, 400);
   };
 
   return (
     <>
-      <div className="min-h-screen relative pt-32 pb-24 px-6" data-testid={isRegister ? 'register-page' : 'login-page'}>
+      <div className="min-h-screen relative pt-32 pb-24 px-6 text-white overflow-hidden" data-testid={isRegister ? 'register-page' : 'login-page'}>
         <div className="aurora" />
         <div className="relative z-10 mx-auto max-w-lg">
           <Link to="/" className="flex items-center gap-2 mb-8 w-fit" data-testid="auth-logo-link">
@@ -92,7 +104,7 @@ export default function Login({ mode = 'signin' }) {
 
               <div className="pt-2">
                 <MagneticButton type="submit" data-testid="auth-submit" className="w-full">
-                  {loading ? 'Please wait…' : (isRegister ? 'Create account' : 'Sign in')} <ArrowUpRight size={16} />
+                  <span>{loading ? 'Please wait…' : (isRegister ? 'Create account' : 'Sign in')}</span> <ArrowUpRight size={16} />
                 </MagneticButton>
               </div>
             </motion.form>
