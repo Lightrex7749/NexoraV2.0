@@ -1,7 +1,4 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-dotenv.config();
+import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
@@ -9,24 +6,32 @@ const connectDB = async () => {
     const dbName = process.env.DB_NAME;
 
     if (!mongoUrl || !dbName) {
-      throw new Error('MONGO_URL or DB_NAME is not set in .env file');
+      console.error("MONGO_URL and DB_NAME environment variables are required.");
+      process.exit(1);
     }
-
-    console.log('Connecting to MongoDB (Local)...');
-    console.log(`URI: ${mongoUrl}`);
 
     const conn = await mongoose.connect(mongoUrl, {
       dbName,
-      serverSelectionTimeoutMS: 10000,
+      // Atlas-specific connection options for better stability
+      serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
+      family: 4 // Use IPv4, skip trying IPv6
     });
 
-    console.log(`✓ MongoDB Connected: ${conn.connection.host}:${conn.connection.port}`);
-    console.log(`✓ Database: ${conn.connection.name}`);
-    return conn.connection;
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    
+    mongoose.connection.on('error', (err) => {
+      console.error('MongoDB connection error:', err);
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      console.warn('MongoDB disconnected. Attempting to reconnect...');
+    });
+
   } catch (error) {
-    console.error('❌ MongoDB Connection Error:', error.message);
-    throw error;
+    console.error(`Database Connection Failed: ${error.message}`);
+    console.warn("The server is continuing to run, but database-dependent routes will fail.");
+    // Removed process.exit(1) so the backend stays alive in restrictive sandbox environments
   }
 };
 

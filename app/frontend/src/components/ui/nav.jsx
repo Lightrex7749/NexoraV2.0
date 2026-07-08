@@ -21,7 +21,6 @@ export function PublicNavbar() {
     { to: '/features', label: 'Features' },
     { to: '/showcase', label: 'Showcase' },
     { to: '/events', label: 'Events' },
-    { to: '/pricing', label: 'Pricing' },
     { to: '/about', label: 'About' },
   ];
 
@@ -35,9 +34,6 @@ export function PublicNavbar() {
     >
       <div className={`mx-auto max-w-7xl px-6 flex items-center justify-between ${scrolled ? 'glass px-6 py-3 rounded-full' : ''}`}>
         <Link to="/" className="flex items-center gap-2" data-testid="logo-link">
-          <div className="w-8 h-8 rounded-lg bg-accent-gradient flex items-center justify-center">
-            <Sparkles size={16} className="text-black" />
-          </div>
           <span className="font-display text-xl font-semibold tracking-tight">NEXORA</span>
         </Link>
 
@@ -98,9 +94,6 @@ export function PublicFooter() {
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 rounded-lg bg-accent-gradient flex items-center justify-center">
-                <Sparkles size={16} className="text-black" />
-              </div>
               <span className="font-display text-xl font-semibold">NEXORA</span>
             </div>
             <p className="text-zinc-400 max-w-md leading-relaxed">
@@ -111,7 +104,6 @@ export function PublicFooter() {
             <h4 className="text-xs font-bold tracking-[0.2em] uppercase text-emerald-500 mb-4">Product</h4>
             <ul className="space-y-3 text-sm text-zinc-400">
               <li><Link to="/features">Features</Link></li>
-              <li><Link to="/pricing">Pricing</Link></li>
               <li><Link to="/showcase">Showcase</Link></li>
               <li><Link to="/events">Events</Link></li>
             </ul>

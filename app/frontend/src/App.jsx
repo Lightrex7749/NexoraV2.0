@@ -11,7 +11,6 @@ import { isAuthed } from './lib/auth';
 import Landing from './pages/Landing';
 import About from './pages/About';
 import Features from './pages/Features';
-import Pricing from './pages/Pricing';
 import Showcase from './pages/Showcase';
 import Events from './pages/Events';
 import SuccessStories from './pages/SuccessStories';
@@ -98,7 +97,6 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/about" element={<About />} />
             <Route path="/features" element={<Features />} />
-            <Route path="/pricing" element={<Pricing />} />
             <Route path="/showcase" element={<Showcase />} />
             <Route path="/events" element={<Events />} />
             <Route path="/success-stories" element={<SuccessStories />} />

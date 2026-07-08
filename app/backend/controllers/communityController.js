@@ -5,8 +5,8 @@ import User from '../models/User.js';
 
 export const getCommunityPosts = async (req, res) => {
   try {
-    const ideas = await Idea.find({}).populate('author', 'firstName lastName name avatarUrl').lean();
-    const posts = await Post.find({}).populate('author', 'firstName lastName name avatarUrl').lean();
+    const ideas = await Idea.find({ status: { $ne: 'draft' } }).populate('author', 'name avatarUrl').lean();
+    const posts = await Post.find({}).populate('author', 'name avatarUrl').lean();
     
     // Get all likes
     const allLikes = await Like.find({}).lean();
@@ -16,8 +16,8 @@ export const getCommunityPosts = async (req, res) => {
       return {
         id: idea._id.toString(),
         type: 'idea',
-        author: idea.author ? idea.author.name || `${idea.author.firstName} ${idea.author.lastName}` : 'Anonymous',
-        avatar: idea.author?.avatarUrl,
+        author: idea.author?.name || 'Unknown User',
+        avatar: idea.author?.avatarUrl || `https://ui-avatars.com/api/?name=${idea.author?.name || 'Unknown'}&background=random`,
         category: idea.tags && idea.tags.length > 0 ? idea.tags[0] : 'General',
         title: idea.title,
         body: idea.description,
@@ -33,8 +33,8 @@ export const getCommunityPosts = async (req, res) => {
       return {
         id: post._id.toString(),
         type: 'post',
-        author: post.author ? post.author.name || `${post.author.firstName} ${post.author.lastName}` : 'Anonymous',
-        avatar: post.author?.avatarUrl,
+        author: post.author?.name || 'Unknown User',
+        avatar: post.author?.avatarUrl || `https://ui-avatars.com/api/?name=${post.author?.name || 'Unknown'}&background=random`,
         category: 'Discussion',
         title: null, // Posts might just be text
         body: post.content,

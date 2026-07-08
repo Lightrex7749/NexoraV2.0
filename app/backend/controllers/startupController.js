@@ -4,7 +4,7 @@ import Like from '../models/Like.js';
 
 export const getStartups = async (req, res) => {
   try {
-    const startups = await Startup.find({}).populate('founder', 'firstName lastName').lean();
+    const startups = await Startup.find({}).populate('founder', 'name').lean();
     
     // Get all startup likes
     const allLikes = await Like.find({ targetType: 'Startup' }).lean();
@@ -20,7 +20,7 @@ export const getStartups = async (req, res) => {
         stage: s.stage ? s.stage.charAt(0).toUpperCase() + s.stage.slice(1) : 'Idea',
         status: s.isPublished ? 'APPROVED' : 'PENDING',
         logo: s.name.substring(0, 2).toUpperCase(),
-        owner: s.founder ? `${s.founder.firstName} ${s.founder.lastName}` : 'Unknown',
+        owner: s.founder?.name || 'Unknown',
         progress: Math.floor(Math.random() * 100), // mock progress since it's not in DB
         likes: likesCount
       };
@@ -49,7 +49,7 @@ export const getStartupById = async (req, res) => {
       stage: startup.stage ? startup.stage.charAt(0).toUpperCase() + startup.stage.slice(1) : 'Idea',
       status: startup.isPublished ? 'APPROVED' : 'PENDING',
       logo: startup.name.substring(0, 2).toUpperCase(),
-      owner: startup.founder ? `${startup.founder.firstName} ${startup.founder.lastName}` : 'Unknown',
+      owner: startup.founder ? startup.founder.name || `${startup.founder.firstName} ${startup.founder.lastName}` : 'Unknown',
       progress: Math.floor(Math.random() * 100),
     };
 

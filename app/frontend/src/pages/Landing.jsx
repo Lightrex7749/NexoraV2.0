@@ -33,7 +33,6 @@ export default function Landing() {
       <FeatureBento />
       <HowItWorks />
       <TestimonialsSection />
-      <PricingSection />
       <FaqSection />
       <FinalCTA />
     </>
@@ -202,17 +201,18 @@ function Journey() {
   }, []);
 
   return (
-    <section id="journey" ref={containerRef} className="relative overflow-hidden h-screen" data-testid="journey-section">
-      <div className="absolute top-24 left-6 md:left-12 z-10">
+    <section id="journey" ref={containerRef} className="relative overflow-hidden h-screen flex flex-col" data-testid="journey-section">
+      <div className="pt-12 md:pt-20 px-6 md:px-12 z-10 shrink-0">
         <SectionLabel number="02" title="The Journey" />
         <h2 className="font-display text-4xl md:text-6xl font-medium tracking-tight max-w-xl">
           Six stages. <span className="gradient-text">One surface.</span>
         </h2>
       </div>
 
-      <div ref={trackRef} className="absolute top-0 left-0 h-full flex items-end pb-16 md:pb-24 gap-8 pl-[10vw] pr-[10vw]">
-        {JOURNEY.map((j, i) => (
-          <div key={j.step} className="min-w-[70vw] md:min-w-[42vw] h-[62vh]">
+      <div className="flex-1 relative mt-8 md:mt-12 w-full">
+        <div ref={trackRef} className="absolute top-0 left-0 h-full flex items-center gap-8 pl-[10vw] pr-[10vw]">
+          {JOURNEY.map((j, i) => (
+            <div key={j.step} className="min-w-[75vw] md:min-w-[40vw] h-[380px] md:h-[450px]">
             <GlassCard className="h-full p-10 flex flex-col justify-between">
               <div>
                 <div className="font-mono text-xs text-emerald-500 mb-6">{j.step}</div>
@@ -228,6 +228,7 @@ function Journey() {
             </GlassCard>
           </div>
         ))}
+        </div>
       </div>
     </section>
   );

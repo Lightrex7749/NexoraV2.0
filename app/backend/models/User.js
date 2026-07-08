@@ -37,5 +37,6 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.index({ role: 1, isActive: 1 });
+userSchema.index({ name: 'text', industry: 'text', skills: 'text' }, { name: 'UserSearchIndex', weights: { name: 10, industry: 5, skills: 2 } });
 
 export default mongoose.model('User', userSchema);

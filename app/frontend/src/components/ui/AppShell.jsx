@@ -56,9 +56,6 @@ export default function AppShell() {
       <aside className="fixed left-0 top-0 bottom-0 w-64 glass rounded-none border-r border-white/[0.06] z-40 flex flex-col" data-testid="app-sidebar">
         <div className="p-6 border-b border-white/[0.06]">
           <Link to="/" className="flex items-center gap-2" data-testid="sidebar-logo">
-            <div className="w-8 h-8 rounded-lg bg-accent-gradient flex items-center justify-center">
-              <Sparkles size={16} className="text-black" />
-            </div>
             <span className="font-display text-lg font-semibold tracking-tight">NEXORA</span>
           </Link>
         </div>

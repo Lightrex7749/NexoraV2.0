@@ -1,6 +1,7 @@
 import Job from '../models/Job.js';
 import Application from '../models/Application.js';
 import User from '../models/User.js';
+import { generateHashtags } from '../services/aiService.js';
 
 export const getJobs = async (req, res) => {
   try {
@@ -18,6 +19,8 @@ export const getJobs = async (req, res) => {
         description: j.description,
         location: j.location || 'Remote',
         type: j.type,
+        hashtags: j.hashtags || [],
+        attachmentUrl: j.attachmentUrl,
         postedBy: j.postedBy?.name || 'Unknown',
         applicants: applicantsCount,
         createdAt: j.createdAt
@@ -34,11 +37,20 @@ export const getJobs = async (req, res) => {
 export const createJob = async (req, res) => {
   try {
     const { title, company, description, location, type } = req.body;
+    let attachmentUrl = null;
+    
+    // Process file if present (Mock file upload)
+    if (req.file) {
+      attachmentUrl = `/uploads/${req.file.originalname}`; // Dummy path
+    }
     
     let user = await User.findOne({});
     if (!user) {
       return res.status(401).json({ success: false, detail: "Not authenticated" });
     }
+
+    // AI generated hashtags
+    const hashtags = await generateHashtags(title, description);
 
     const job = await Job.create({
       title,
@@ -46,6 +58,8 @@ export const createJob = async (req, res) => {
       description,
       location,
       type: type || 'full-time',
+      hashtags,
+      attachmentUrl,
       postedBy: user._id
     });
 

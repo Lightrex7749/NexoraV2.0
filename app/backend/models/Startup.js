@@ -19,7 +19,7 @@ const startupSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-startupSchema.index({ name: 'text', tagline: 'text', description: 'text' });
+startupSchema.index({ name: 'text', tagline: 'text', description: 'text', feature: 'text' }, { name: 'StartupSearchIndex', weights: { name: 10, tagline: 5, description: 2, feature: 1 } });
 startupSchema.index({ stage: 1, isPublished: 1 });
 
 export default mongoose.model('Startup', startupSchema);

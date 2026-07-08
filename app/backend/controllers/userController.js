@@ -92,11 +92,13 @@ export const getAllUsers = async (req, res) => {
       id: u._id.toString(),
       name: u.name,
       avatar: u.avatarUrl || `https://ui-avatars.com/api/?name=${u.name || 'User'}&background=random`,
-      role: u.role || 'Member',
-      firm: u.company || 'Independent',
-      verified: true,
+      role: u.headline || (u.workExperience && u.workExperience.length > 0 ? u.workExperience[0].role : (u.role || 'Member')),
+      firm: (u.workExperience && u.workExperience.length > 0 ? u.workExperience[0].company : 'Independent'),
+      verified: u.verified || false,
       location: u.location || 'Remote',
-      industry: u.industry || 'Tech'
+      industry: u.industry || 'Tech',
+      bio: u.bio || '',
+      workExperience: u.workExperience || []
     }));
 
     res.json({ success: true, data: formatted });

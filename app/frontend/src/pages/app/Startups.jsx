@@ -26,10 +26,10 @@ export default function Startups() {
     fetchStartups();
   }, []);
 
-  const stages = ['All', 'Idea', 'Validation', 'MVP', 'Launch', 'Growth', 'Funding'];
+  const stages = ['All', 'Idea', 'Validation', 'Growth', 'Scale'];
 
   const filtered = startups.filter(s => {
-    const matchStage = filter === 'All' ? true : s.stage === filter;
+    const matchStage = filter === 'All' ? true : s.stage?.toLowerCase() === filter.toLowerCase();
     const matchSearch = s.name.toLowerCase().includes(search.toLowerCase()) ||
                         (s.tagline && s.tagline.toLowerCase().includes(search.toLowerCase()));
     return matchStage && matchSearch;

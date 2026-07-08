@@ -3,7 +3,9 @@ node_modules/
 
 # Env files
 .env
+.env.*.local
 app/backend/.env
+app/frontend/.env
 
 # Python env
 .venv/

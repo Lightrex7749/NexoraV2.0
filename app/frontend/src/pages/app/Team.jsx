@@ -8,6 +8,7 @@ export default function Team() {
 
   const [isPosting, setIsPosting] = useState(false);
   const [postForm, setPostForm] = useState({ title: '', company: '', description: '', location: '', type: 'full-time' });
+  const [postFile, setPostFile] = useState(null);
 
   const [applyingTo, setApplyingTo] = useState(null);
   const [coverLetter, setCoverLetter] = useState('');
@@ -32,7 +33,15 @@ export default function Team() {
 
   const handlePostRole = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/jobs`, postForm);
+      const formData = new FormData();
+      formData.append('title', postForm.title);
+      formData.append('company', postForm.company);
+      formData.append('description', postForm.description);
+      formData.append('location', postForm.location);
+      formData.append('type', postForm.type);
+      if (postFile) formData.append('file', postFile);
+
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/jobs`, formData);
       if (res.data.success) {
         setJobs([
           { ...res.data.data, id: res.data.data._id, applicants: 0 },
@@ -40,6 +49,7 @@ export default function Team() {
         ]);
         setIsPosting(false);
         setPostForm({ title: '', company: '', description: '', location: '', type: 'full-time' });
+        setPostFile(null);
       }
     } catch (err) {
       console.error("Failed to post role:", err);
@@ -100,11 +110,18 @@ export default function Team() {
             </div>
             <div className="md:col-span-2">
               <label className="text-xs text-zinc-400 block mb-1">Description</label>
-              <textarea value={postForm.description} onChange={e => setPostForm({...postForm, description: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white text-sm" rows={3}></textarea>
+              <textarea value={postForm.description} onChange={e => setPostForm({...postForm, description: e.target.value})} rows={3} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white text-sm" />
             </div>
-            <div className="md:col-span-2 flex justify-end pt-2">
-              <MagneticButton onClick={handlePostRole}>Publish Role</MagneticButton>
+          </div>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <label className="cursor-pointer text-xs text-emerald-400 hover:text-emerald-300">
+                📎 Attach File (Optional)
+                <input type="file" className="hidden" onChange={e => setPostFile(e.target.files[0])} />
+              </label>
+              {postFile && <span className="text-xs text-zinc-400">{postFile.name}</span>}
             </div>
+            <MagneticButton onClick={handlePostRole}>Post Job</MagneticButton>
           </div>
         </GlassCard>
       )}
@@ -141,20 +158,35 @@ export default function Team() {
                   <div className="text-xs text-emerald-500 mb-1">{j.company || j.startup}</div>
                   <div className="font-display text-xl font-medium tracking-tight">{j.title}</div>
                 </div>
-                <div className="text-xs text-zinc-500 text-right">{j.applicants || 0} applicants</div>
               </div>
               <p className="text-sm text-zinc-400 mb-4 line-clamp-2">{j.description}</p>
-              <div className="flex items-center justify-between text-xs text-zinc-500 mb-4 mt-auto">
-                <span className="flex items-center gap-1"><MapPin size={12} /> {j.location}</span>
-                <span className="uppercase tracking-widest">{j.type}</span>
+              <div className="flex items-center gap-4 mt-3 text-xs text-zinc-400">
+                <span className="flex items-center gap-1"><MapPin size={12}/> {j.location}</span>
+                <span className="flex items-center gap-1"><Users size={12}/> {j.applicants || 0} applicants</span>
+                <span className="text-zinc-500">•</span>
+                <span>Posted by {j.postedBy}</span>
               </div>
-              {appliedJobs[j.id] ? (
-                <button disabled className="px-4 py-2 text-xs w-full rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center gap-2 font-medium">
-                  <Check size={14} /> Applied
-                </button>
-              ) : (
-                <MagneticButton className="!px-4 !py-2 text-xs w-full" onClick={() => setApplyingTo(j)}>Apply →</MagneticButton>
+              {j.hashtags && j.hashtags.length > 0 && (
+                <div className="flex gap-2 mt-3">
+                  {j.hashtags.map(tag => (
+                    <span key={tag} className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">{tag}</span>
+                  ))}
+                </div>
               )}
+              {j.attachmentUrl && (
+                <div className="mt-2 text-xs mb-4">
+                  <a href={j.attachmentUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">📎 View Attachment</a>
+                </div>
+              )}
+              <div className="mt-auto pt-4">
+                {appliedJobs[j.id] ? (
+                  <button disabled className="px-4 py-2 text-xs w-full rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center gap-2 font-medium">
+                    <Check size={14} /> Applied
+                  </button>
+                ) : (
+                  <MagneticButton className="!px-4 !py-2 text-xs w-full" onClick={() => setApplyingTo(j)}>Apply →</MagneticButton>
+                )}
+              </div>
             </GlassCard>
           ))}
         </div>

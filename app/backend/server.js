@@ -18,6 +18,8 @@ import documentRoutes from './routes/documentRoutes.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, '.env') });
 
+import connectDB from './config/db.js';
+
 const app = express();
 const port = process.env.PORT || 8001;
 
@@ -28,18 +30,19 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// MongoDB Connection
-const mongoUrl = process.env.MONGO_URL;
-const dbName = process.env.DB_NAME;
+// Connect to Database
+connectDB();
 
-if (!mongoUrl || !dbName) {
-  console.error("MONGO_URL and DB_NAME environment variables are required.");
-  process.exit(1);
-}
-
-mongoose.connect(mongoUrl, { dbName })
-  .then(() => console.log(`Connected to MongoDB database: ${dbName}`))
-  .catch(err => console.error("MongoDB connection error:", err));
+// Health check route for Render deployment & database tracking
+app.get('/health', (req, res) => {
+  const dbStatus = mongoose.connection.readyState;
+  // 0: disconnected, 1: connected, 2: connecting, 3: disconnecting
+  res.status(dbStatus === 1 ? 200 : 503).json({
+    status: 'success',
+    database: dbStatus === 1 ? 'connected' : 'disconnected',
+    timestamp: new Date()
+  });
+});
 
 // Mount Routes
 app.use('/api', systemRoutes);
@@ -54,6 +57,21 @@ app.use('/api/documents', documentRoutes);
 // e.g. app.use('/api/v1/auth', authRoutes);
 // e.g. app.use('/api/v1/startups', startupRoutes);
 
+// 404 Route Not Found
+app.use((req, res, next) => {
+  res.status(404).json({ success: false, message: 'API Route Not Found' });
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
+});
+
 app.listen(port, () => {
   console.log(`Nexora API listening on http://0.0.0.0:${port}`);
 });
@@ -61,4 +79,13 @@ app.listen(port, () => {
 process.on('SIGINT', async () => {
   await mongoose.connection.close();
   process.exit(0);
+});
+
+// Prevent unhandled promise rejections from crashing the server
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Promise Rejection:', err.message || err);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err.message || err);
 });

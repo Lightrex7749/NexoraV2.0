@@ -45,11 +45,8 @@ export default function Login({ mode = 'signin' }) {
       <div className="min-h-screen relative pt-32 pb-24 px-6" data-testid={isRegister ? 'register-page' : 'login-page'}>
         <div className="aurora" />
         <div className="relative z-10 mx-auto max-w-lg">
-          <Link to="/" className="inline-flex items-center gap-2 mb-8" data-testid="auth-logo-link">
-            <div className="w-9 h-9 rounded-lg bg-accent-gradient flex items-center justify-center">
-              <Sparkles size={16} className="text-black" />
-            </div>
-            <span className="font-display text-xl font-semibold tracking-tight">NEXORA</span>
+          <Link to="/" className="flex items-center gap-2 mb-8 w-fit" data-testid="auth-logo-link">
+            <span className="font-display text-2xl font-semibold tracking-tight">NEXORA</span>
           </Link>
 
           <Overline>{isRegister ? 'Create your account' : 'Sign in'}</Overline>
