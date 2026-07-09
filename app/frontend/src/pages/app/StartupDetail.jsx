@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, FileText, Users, Sparkles, Loader2, Save, X } from 'lucide-react';
+import { ArrowLeft, FileText, Users, Sparkles, Loader2, Save, X, MapPin, LocateFixed, Hash } from 'lucide-react';
 import { GlassCard, Overline, MagneticButton } from '../../components/ui/primitives';
 import { BUSINESS_PLAN_SECTIONS, ROADMAP } from '../../mock/data';
 
@@ -12,7 +12,7 @@ export default function StartupDetail() {
 
   // Edit State
   const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ name: '', tagline: '', stage: '' });
+  const [editForm, setEditForm] = useState({ name: '', tagline: '', stage: '', location: '' });
 
   // Apply State
   const [hasApplied, setHasApplied] = useState(false);
@@ -25,7 +25,8 @@ export default function StartupDetail() {
         setEditForm({
           name: res.data.data.name,
           tagline: res.data.data.tagline,
-          stage: res.data.data.stage
+          stage: res.data.data.stage,
+          location: res.data.data.location || ''
         });
       } catch (err) {
         console.error("Failed to fetch startup:", err);
@@ -53,6 +54,26 @@ export default function StartupDetail() {
     setHasApplied(true);
   };
 
+  const useCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setEditForm(prev => ({
+          ...prev,
+          location: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
+        }));
+      },
+      (error) => {
+        console.error('Failed to read current location:', error);
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  };
+
   if (loading) {
     return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-emerald-500" /></div>;
   }
@@ -72,6 +93,7 @@ export default function StartupDetail() {
             <Overline>{s.industry} • {s.stage}</Overline>
             <h1 className="font-display text-4xl md:text-5xl font-medium tracking-tight mt-2">{s.name}</h1>
             <p className="text-zinc-400 mt-2 max-w-xl">{s.tagline}</p>
+            {s.location && <div className="mt-3 inline-flex items-center gap-2 text-xs text-zinc-400 bg-white/[0.03] px-3 py-1.5 rounded-full"><MapPin size={12} /> {s.location}</div>}
           </div>
         </div>
         <div className="flex gap-3">
@@ -108,6 +130,13 @@ export default function StartupDetail() {
                 <option value="scale">Scale</option>
               </select>
             </div>
+            <div>
+              <label className="text-xs text-zinc-400 block mb-1">Location</label>
+              <div className="flex gap-2">
+                <input type="text" value={editForm.location || ''} onChange={e => setEditForm({...editForm, location: e.target.value})} placeholder="City, address, or coordinates" className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white text-sm" />
+                <button type="button" onClick={useCurrentLocation} className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/[0.05] text-xs text-white hover:bg-white/[0.08] transition-colors"><LocateFixed size={14} /> Use current location</button>
+              </div>
+            </div>
             <div className="flex justify-end pt-2">
               <MagneticButton onClick={handleSave}><Save size={14}/> Save Changes</MagneticButton>
             </div>
@@ -120,6 +149,34 @@ export default function StartupDetail() {
         <GlassCard className="p-6"><Overline>Progress</Overline><div className="font-display text-3xl mt-2">{s.progress}%</div><div className="h-1 rounded-full bg-white/[0.05] mt-3"><div className="h-full bg-accent-gradient rounded-full" style={{ width: `${s.progress}%` }} /></div></GlassCard>
         <GlassCard className="p-6"><Overline>Team</Overline><div className="font-display text-3xl mt-2">6</div><div className="text-xs text-zinc-500 mt-1">3 co-founders, 3 hires</div></GlassCard>
       </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <GlassCard className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles size={16} className="text-emerald-500" />
+            <Overline>AI Evaluation</Overline>
+          </div>
+          <div className="font-display text-4xl font-medium">{typeof s.aiScore === 'number' ? `${s.aiScore}/100` : '—'}</div>
+          <p className="text-sm text-zinc-400 mt-3 leading-relaxed">{s.aiSummary || 'This startup will be evaluated when it is created.'}</p>
+        </GlassCard>
+
+        <GlassCard className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Hash size={16} className="text-emerald-500" />
+            <Overline>Hashtags</Overline>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {(s.hashtags || []).length > 0 ? s.hashtags.map(tag => <span key={tag} className="rounded-full bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300">{tag}</span>) : <span className="text-sm text-zinc-500">No hashtags generated yet.</span>}
+          </div>
+        </GlassCard>
+      </div>
+
+      {s.idea && (
+        <GlassCard className="p-6">
+          <Overline>Startup Idea</Overline>
+          <p className="mt-3 text-sm text-zinc-300 leading-relaxed">{s.idea}</p>
+        </GlassCard>
+      )}
 
       <GlassCard className="p-8">
         <Overline>Business Plan</Overline>

@@ -16,6 +16,7 @@ export function signIn({ name, email, role = 'Founder' }) {
         email: email || 'founder@nexora.co',
         role,
         avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop',
+        avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop',
         headline: role === 'Founder' ? 'Building the future.' : role,
     };
     localStorage.setItem(KEY, JSON.stringify(user));

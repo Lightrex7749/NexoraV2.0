@@ -10,7 +10,7 @@ export const getConversations = async (req, res) => {
       id: u._id.toString(),
       name: `${u.firstName || u.name} ${u.lastName || ''}`,
       role: u.role || 'Member',
-      avatar: `https://ui-avatars.com/api/?name=${u.firstName || u.name}+${u.lastName || ''}&background=random`,
+      avatar: u.avatarUrl || `https://ui-avatars.com/api/?name=${u.firstName || u.name}+${u.lastName || ''}&background=random`,
       time: '1h',
       last: 'Hello!',
       unread: 0

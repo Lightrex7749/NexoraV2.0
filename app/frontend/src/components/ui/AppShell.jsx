@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Link, useLocation, Outlet,useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 import {
   LayoutDashboard, Rocket, Users, MessageSquare, Sparkles, TrendingUp, Briefcase,
   UserCircle, Bell, Search, Settings, Compass, Building2, Award, ShieldCheck, ChevronDown, LogOut
@@ -30,14 +31,43 @@ const ROLE_NAV = {
 const ROLES = ['Founder', 'Mentor', 'Investor', 'Admin'];
 
 export default function AppShell() {
-  const authedUser = getUser() || {};
-  const [role, setRole] = useState(authedUser.role || 'Founder');
+  const [user, setUser] = useState(getUser() || {});
+  const [role, setRole] = useState(user.role || 'Founder');
   const [roleOpen, setRoleOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   const roleExtras = ROLE_NAV[role] || [];
   const unread = NOTIFICATIONS.filter(n => n.unread).length;
+
+  useEffect(() => {
+    const syncUser = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`);
+        if (res.data.success && res.data.data) {
+          const nextUser = {
+            ...user,
+            ...res.data.data,
+            avatar: res.data.data.avatarUrl || user.avatar || CURRENT_USER.avatar,
+          };
+          setUser(nextUser);
+          setRole((nextUser.role || 'Founder').charAt(0).toUpperCase() + (nextUser.role || 'Founder').slice(1));
+        }
+      } catch {
+        // Keep the local auth snapshot if the profile endpoint is unavailable.
+      }
+    };
+
+    const handleUserUpdated = () => {
+      const localUser = getUser() || {};
+      setUser(localUser);
+      setRole((localUser.role || 'Founder').charAt(0).toUpperCase() + (localUser.role || 'Founder').slice(1));
+    };
+
+    syncUser();
+    window.addEventListener('nexora-user-updated', handleUserUpdated);
+    return () => window.removeEventListener('nexora-user-updated', handleUserUpdated);
+  }, []);
 
 
   const handleSignOut = () => {
@@ -46,9 +76,9 @@ export default function AppShell() {
   };
 
   const displayUser = {
-    name: authedUser.name || CURRENT_USER.name,
-    avatar: authedUser.avatar || CURRENT_USER.avatar,
-    headline: authedUser.headline || CURRENT_USER.headline,
+    name: user.name || CURRENT_USER.name,
+    avatar: user.avatar || user.avatarUrl || CURRENT_USER.avatar,
+    headline: user.headline || CURRENT_USER.headline,
   };
   return (
     <div className="min-h-screen bg-ink-950 text-white">

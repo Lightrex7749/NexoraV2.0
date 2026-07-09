@@ -36,7 +36,7 @@ export const updateProfile = async (req, res) => {
       return res.status(404).json({ success: false, detail: "User not found" });
     }
 
-    const { name, bio, headline, location, industry, resumeUrl, skills, interests, workExperience, projects } = req.body;
+    const { name, bio, headline, location, industry, resumeUrl, avatarUrl, skills, interests, workExperience, projects } = req.body;
     
     if (name) user.name = name;
     if (bio) user.bio = bio;
@@ -44,6 +44,7 @@ export const updateProfile = async (req, res) => {
     if (location) user.location = location;
     if (industry) user.industry = industry;
     if (resumeUrl) user.resumeUrl = resumeUrl;
+    if (avatarUrl) user.avatarUrl = avatarUrl;
     if (skills) user.skills = skills;
     if (interests) user.interests = interests;
     if (workExperience) user.workExperience = workExperience;

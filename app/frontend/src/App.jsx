@@ -37,7 +37,7 @@ import Notifications from './pages/app/Notifications';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [pathname]);
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'auto' }); }, [pathname]);
   return null;
 }
 
@@ -58,8 +58,15 @@ function PublicLayout() {
 }
 
 function AuthLayout() {
-  // Bare layout for login/register — no navbar/footer clutter
-  return <Outlet />;
+  return (
+    <>
+      <CustomCursor />
+      <div className="relative bg-ink-950 min-h-screen overflow-hidden">
+        <Grain />
+        <Outlet />
+      </div>
+    </>
+  );
 }
 
 function RequireAuth() {

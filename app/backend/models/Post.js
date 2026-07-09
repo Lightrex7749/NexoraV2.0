@@ -7,6 +7,7 @@ const postSchema = new mongoose.Schema(
     content: { type: String, required: true },
     imageUrl: String,
     attachmentUrl: String,
+    viewCount: { type: Number, default: 0 },
     visibility: { type: String, enum: ['public', 'private'], default: 'public' },
     createdAt: { type: Date, default: Date.now }
   },

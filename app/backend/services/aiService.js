@@ -122,7 +122,7 @@ export const chatWithAI = async (message, fileData, history = []) => {
 };
 
 export const generateHashtags = async (title, description) => {
-  const systemPrompt = `You are an SEO expert. Generate exactly 3 highly relevant hashtags for a job post. Return ONLY a JSON object with this structure:
+  const systemPrompt = `You are a startup branding expert. Generate exactly 3 highly relevant hashtags for a startup, product launch, or job post. Return ONLY a JSON object with this structure:
 {
   "hashtags": ["#tag1", "#tag2", "#tag3"]
 }`;

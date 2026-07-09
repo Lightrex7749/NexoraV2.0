@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ChevronUp, MessageSquare, Loader2, Plus, X, Heart, Share2, FileText, Check, Paperclip, Link as LinkIcon } from 'lucide-react';
+import { ChevronUp, MessageSquare, Loader2, Plus, X, Heart, Share2, FileText, Check, Paperclip, Link as LinkIcon, Eye, Sparkles, CalendarDays, BadgeCheck, Send } from 'lucide-react';
 import { GlassCard, Overline, MagneticButton } from '../../components/ui/primitives';
+import { EVENTS } from '../../mock/data';
 
 export default function Community() {
   const [posts, setPosts] = useState([]);
+  const [events, setEvents] = useState([]);
   const [category, setCategory] = useState('All');
   const [loading, setLoading] = useState(true);
 
@@ -15,20 +17,39 @@ export default function Community() {
   const [submitError, setSubmitError] = useState('');
   const [sharedId, setSharedId] = useState(null);
   const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [expandedPostId, setExpandedPostId] = useState(null);
+  const [commentsByPost, setCommentsByPost] = useState({});
+  const [commentDrafts, setCommentDrafts] = useState({});
+  const [commentBusy, setCommentBusy] = useState({});
+
+  const fetchPosts = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/community`);
+      setPosts(res.data.data.posts || []);
+      setEvents((res.data.data.events && res.data.data.events.length > 0) ? res.data.data.events : EVENTS);
+    } catch (err) {
+      console.error("Failed to fetch posts:", err);
+      setEvents(EVENTS);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/community`);
-        setPosts(res.data.data);
-      } catch (err) {
-        console.error("Failed to fetch posts:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPosts();
   }, []);
+
+  const fetchComments = async (post) => {
+    if (!post) return;
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/community/comments/${post.type === 'idea' ? 'Idea' : 'Post'}/${post.id}`);
+      if (res.data.success) {
+        setCommentsByPost(prev => ({ ...prev, [post.id]: res.data.data }));
+      }
+    } catch (err) {
+      console.error('Failed to fetch comments:', err);
+    }
+  };
 
   const handleSubmitIdea = async () => {
     setSubmitError('');
@@ -51,20 +72,7 @@ export default function Community() {
 
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/community`, payload);
       if (res.data.success) {
-        // Optimistically add to list
-        const newPost = {
-          id: res.data.data._id,
-          type: submitType,
-          title: payload.title,
-          body: payload.body,
-          attachmentUrl: payload.attachmentUrl,
-          category: payload.category,
-          author: 'You',
-          likes: 0,
-          comments: 0,
-          time: new Date()
-        };
-        setPosts([newPost, ...posts]);
+        await fetchPosts();
         setIsSubmitting(false);
         setIdeaForm({ title: '', body: '', category: 'Product', attachmentUrl: '' });
       }
@@ -98,6 +106,38 @@ export default function Community() {
     setTimeout(() => setSharedId(null), 2000);
   };
 
+  const toggleComments = async (post) => {
+    const nextId = expandedPostId === post.id ? null : post.id;
+    setExpandedPostId(nextId);
+    if (nextId && !commentsByPost[post.id]) {
+      await fetchComments(post);
+    }
+  };
+
+  const handleCommentSubmit = async (post) => {
+    const draft = (commentDrafts[post.id] || '').trim();
+    if (draft.length < 2) return;
+    try {
+      setCommentBusy(prev => ({ ...prev, [post.id]: true }));
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/community/comments/${post.type === 'idea' ? 'Idea' : 'Post'}/${post.id}`,
+        { content: draft }
+      );
+      if (res.data.success) {
+        setCommentsByPost(prev => ({
+          ...prev,
+          [post.id]: [...(prev[post.id] || []), res.data.data]
+        }));
+        setCommentDrafts(prev => ({ ...prev, [post.id]: '' }));
+        setPosts(prev => prev.map(item => item.id === post.id ? { ...item, comments: (item.comments || 0) + 1 } : item));
+      }
+    } catch (err) {
+      console.error('Failed to create comment:', err);
+    } finally {
+      setCommentBusy(prev => ({ ...prev, [post.id]: false }));
+    }
+  };
+
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -116,6 +156,13 @@ export default function Community() {
   const cats = ['All', ...dynamicCats.filter(c => c !== 'All')];
 
   const shown = category === 'All' ? posts : posts.filter(p => p.category.toLowerCase() === category.toLowerCase());
+
+  const trendingTags = Object.entries(posts.reduce((acc, post) => {
+    acc[post.category] = (acc[post.category] || 0) + 1;
+    return acc;
+  }, {})).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+  const activeEvents = events.slice(0, 4);
 
   return (
     <div className="space-y-6" data-testid="community-page">
@@ -193,49 +240,140 @@ export default function Community() {
           <Loader2 className="animate-spin text-emerald-500" />
         </div>
       ) : (
-        <div className="space-y-3">
-          {shown.map(p => (
-            <GlassCard key={p.id} className="p-6 hover:bg-white/[0.04] transition-colors">
-              <div className="flex items-start gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    {p.avatar ? <img src={p.avatar} alt="avatar" className="w-8 h-8 rounded-full" /> : <div className="w-8 h-8 rounded-full bg-emerald-500/20" />}
-                    <div className="flex items-center gap-2 text-xs text-zinc-400">
-                      <span className="font-medium text-white">{p.author}</span>
-                      <span>•</span>
-                      <span className="text-emerald-500 uppercase tracking-widest">{p.category}</span>
-                    </div>
-                  </div>
-                  {p.title && <h3 className="font-display text-xl font-medium tracking-tight mb-2 hover:text-emerald-400 transition-colors cursor-pointer">{p.title}</h3>}
-                  <p className="text-sm text-zinc-300 leading-relaxed line-clamp-3">{p.body}</p>
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px] items-start">
+          <div className="space-y-3">
+            {shown.map(p => {
+              const expanded = expandedPostId === p.id;
+              return (
+                <GlassCard key={p.id} className="p-6 hover:bg-white/[0.04] transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                        {p.avatar ? <img src={p.avatar} alt="avatar" className="w-8 h-8 rounded-full object-cover" /> : <div className="w-8 h-8 rounded-full bg-emerald-500/20" />}
+                        <div className="flex items-center gap-2 text-xs text-zinc-400 flex-wrap">
+                          <span className="font-medium text-white">{p.author}</span>
+                          {p.badges?.slice(0, 3).map(badge => <span key={badge} className="inline-flex items-center gap-1 rounded-full bg-white/[0.04] px-2 py-0.5 text-[10px] text-zinc-300"><BadgeCheck size={10} className="text-emerald-400" />{badge}</span>)}
+                          <span>•</span>
+                          <span className="text-emerald-500 uppercase tracking-widest">{p.category}</span>
+                        </div>
+                      </div>
+                      {p.title && <h3 className="font-display text-xl font-medium tracking-tight mb-2 hover:text-emerald-400 transition-colors cursor-pointer">{p.title}</h3>}
+                      <p className="text-sm text-zinc-300 leading-relaxed line-clamp-3">{p.body}</p>
 
-                  {p.attachmentUrl && (
-                    <div className="mt-4">
-                      {p.attachmentUrl.startsWith('data:image') ? (
-                        <img src={p.attachmentUrl} alt="Attachment" className="max-h-64 rounded-xl object-contain border border-white/10" />
-                      ) : (
-                        <a href={p.attachmentUrl} download className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-emerald-400 transition-colors">
-                          <LinkIcon size={14} /> Download Attachment
-                        </a>
+                      {p.attachmentUrl && (
+                        <div className="mt-4">
+                          {p.attachmentUrl.startsWith('data:image') ? (
+                            <img src={p.attachmentUrl} alt="Attachment" className="max-h-64 rounded-xl object-contain border border-white/10" />
+                          ) : (
+                            <a href={p.attachmentUrl} download className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-emerald-400 transition-colors">
+                              <LinkIcon size={14} /> Download Attachment
+                            </a>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-zinc-500">
+                        <button onClick={() => handleLike(p.id, p.type)} className={`flex items-center gap-1.5 transition-colors ${p.userLiked ? 'text-emerald-400' : 'hover:text-emerald-400'}`}>
+                          <Heart size={14} className={p.userLiked ? 'fill-emerald-400' : ''} /> {p.likes || 0}
+                        </button>
+                        <button onClick={() => toggleComments(p)} className={`flex items-center gap-1.5 transition-colors ${expanded ? 'text-emerald-400' : 'hover:text-white'}`}>
+                          <MessageSquare size={14} /> {p.comments || 0}
+                        </button>
+                        <span className="flex items-center gap-1.5"><Eye size={14} /> {p.views || 0}</span>
+                        <button onClick={() => handleShare(p.id)} className="flex items-center gap-1.5 hover:text-white transition-colors ml-auto">
+                          {sharedId === p.id ? <><Check size={14} className="text-emerald-400" /> Copied</> : <><Share2 size={14} /> Share</>}
+                        </button>
+                      </div>
+
+                      {expanded && (
+                        <div className="mt-5 border-t border-white/[0.05] pt-4 space-y-4">
+                          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-zinc-500"><MessageSquare size={12} /> Comments</div>
+                          <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                            {(commentsByPost[p.id] || []).map(comment => (
+                              <div key={comment.id} className="flex items-start gap-3 rounded-2xl bg-white/[0.03] p-3">
+                                <img src={comment.avatar} alt={comment.author} className="h-8 w-8 rounded-full object-cover" />
+                                <div className="flex-1">
+                                  <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+                                    <span className="font-medium text-white">{comment.author}</span>
+                                    {comment.badges?.map(badge => <span key={badge} className="rounded-full bg-white/[0.04] px-2 py-0.5 text-[10px] text-zinc-300">{badge}</span>)}
+                                  </div>
+                                  <p className="mt-1 text-sm text-zinc-300 leading-relaxed">{comment.content}</p>
+                                </div>
+                              </div>
+                            ))}
+                            {(commentsByPost[p.id] || []).length === 0 && (
+                              <div className="text-sm text-zinc-500">No comments yet. Start the conversation.</div>
+                            )}
+                          </div>
+                          <div className="flex gap-2 items-end">
+                            <textarea
+                              value={commentDrafts[p.id] || ''}
+                              onChange={(e) => setCommentDrafts(prev => ({ ...prev, [p.id]: e.target.value }))}
+                              rows={2}
+                              placeholder="Write a comment..."
+                              className="flex-1 rounded-2xl border border-white/[0.08] bg-black/40 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-emerald-500/50 focus:outline-none"
+                            />
+                            <button
+                              onClick={() => handleCommentSubmit(p)}
+                              disabled={commentBusy[p.id]}
+                              className="inline-flex h-11 items-center gap-2 rounded-full bg-accent-gradient px-4 text-sm font-medium text-black disabled:opacity-50"
+                            >
+                              <Send size={14} /> {commentBusy[p.id] ? 'Posting' : 'Comment'}
+                            </button>
+                          </div>
+                        </div>
                       )}
                     </div>
-                  )}
-
-                  <div className="mt-4 pt-4 border-t border-white/[0.05] flex items-center gap-6 text-xs text-zinc-500">
-                    <button onClick={() => handleLike(p.id, p.type)} className={`flex items-center gap-1.5 transition-colors ${p.userLiked ? 'text-emerald-400' : 'hover:text-emerald-400'}`}>
-                      <Heart size={14} className={p.userLiked ? 'fill-emerald-400' : ''} /> {p.likes || 0}
-                    </button>
-                    <button className="flex items-center gap-1.5 hover:text-white transition-colors">
-                      <MessageSquare size={14} /> {p.comments || 0}
-                    </button>
-                    <button onClick={() => handleShare(p.id)} className="flex items-center gap-1.5 hover:text-white transition-colors ml-auto">
-                      {sharedId === p.id ? <><Check size={14} className="text-emerald-400" /> Copied</> : <><Share2 size={14} /> Share</>}
-                    </button>
                   </div>
-                </div>
+                </GlassCard>
+              );
+            })}
+          </div>
+
+          <div className="space-y-4 lg:sticky lg:top-6">
+            <GlassCard className="p-5 border border-white/[0.06]">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles size={16} className="text-emerald-500" />
+                <Overline>Live Pulse</Overline>
+              </div>
+              <div className="space-y-3">
+                {trendingTags.length > 0 ? trendingTags.map(([tag, count]) => (
+                  <div key={tag} className="flex items-center justify-between rounded-xl bg-white/[0.03] px-3 py-2 text-sm">
+                    <span>#{tag.toLowerCase()}</span>
+                    <span className="text-zinc-500">{count} posts</span>
+                  </div>
+                )) : <div className="text-sm text-zinc-500">No trending topics yet.</div>}
               </div>
             </GlassCard>
-          ))}
+
+            <GlassCard className="p-5 border border-white/[0.06]">
+              <div className="flex items-center gap-2 mb-4">
+                <CalendarDays size={16} className="text-emerald-500" />
+                <Overline>Events</Overline>
+              </div>
+              <div className="space-y-3">
+                {activeEvents.map(event => (
+                  <div key={event.id} className="rounded-2xl bg-white/[0.03] p-3">
+                    <div className="text-sm font-medium text-white">{event.title}</div>
+                    <div className="mt-1 text-xs text-zinc-400">{event.date} • {event.type}</div>
+                    <div className="mt-1 text-xs text-emerald-500">{event.hosts} • {event.attending} attending</div>
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+
+            <GlassCard className="p-5 border border-white/[0.06]">
+              <div className="flex items-center gap-2 mb-4">
+                <BadgeCheck size={16} className="text-emerald-500" />
+                <Overline>Badges</Overline>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs text-zinc-300">
+                {['Verified', 'Trending', 'Conversation Starter', 'Top Pick'].map(badge => (
+                  <span key={badge} className="rounded-full bg-white/[0.04] px-3 py-1.5">{badge}</span>
+                ))}
+              </div>
+            </GlassCard>
+          </div>
         </div>
       )}
     </div>

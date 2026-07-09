@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { MapPin, Briefcase, Folder, Link as LinkIcon, FileText, Loader2, Save, X } from 'lucide-react';
+import { MapPin, Briefcase, Folder, Link as LinkIcon, FileText, Loader2, Save, X, Upload } from 'lucide-react';
 import { GlassCard, Overline, MagneticButton } from '../../components/ui/primitives';
+import { getUser } from '../../lib/auth';
 export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [documents, setDocuments] = useState([]);
@@ -9,6 +10,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,11 +40,26 @@ export default function Profile() {
       const res = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile`, editForm);
       if (res.data.success) {
         setProfile(res.data.data);
+        localStorage.setItem('nexora_user', JSON.stringify({ ...(getUser() || {}), ...res.data.data, avatar: res.data.data.avatarUrl || res.data.data.avatar }));
+        window.dispatchEvent(new Event('nexora-user-updated'));
         setIsEditing(false);
       }
     } catch (err) {
       console.error("Failed to save profile:", err);
     }
+  };
+
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setEditForm(prev => ({ ...prev, avatarUrl: reader.result }));
+      setUploadingAvatar(false);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleFileUpload = async (e) => {
@@ -82,7 +99,10 @@ export default function Profile() {
   return (
     <div className="space-y-6" data-testid="profile-page">
       <div className="flex items-start gap-6">
-        <img src={profile.avatarUrl || `https://ui-avatars.com/api/?name=${profile.name || 'User'}&background=random`} className="w-24 h-24 rounded-2xl object-cover" alt={profile.name} />
+        <div className="relative">
+          <img src={profile.avatarUrl || `https://ui-avatars.com/api/?name=${profile.name || 'User'}&background=random`} className="w-24 h-24 rounded-2xl object-cover" alt={profile.name} />
+          {profile.avatarUrl && <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-black rounded-full p-1"><Upload size={12} /></div>}
+        </div>
         <div className="flex-1">
           <Overline>{profile.role}</Overline>
           <h1 className="font-display text-4xl font-medium tracking-tight mt-2">{profile.name}</h1>
@@ -103,6 +123,15 @@ export default function Profile() {
             <button onClick={() => setIsEditing(false)} className="text-zinc-400 hover:text-white"><X size={16}/></button>
           </div>
           <div className="space-y-4 grid md:grid-cols-2 gap-4">
+            <div className="md:col-span-2 flex items-center gap-4">
+              <div className="relative">
+                <img src={editForm.avatarUrl || profile.avatarUrl || `https://ui-avatars.com/api/?name=${profile.name || 'User'}&background=random`} alt={profile.name} className="w-20 h-20 rounded-2xl object-cover border border-white/10" />
+              </div>
+              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] text-sm text-white hover:bg-white/[0.08] transition-colors">
+                {uploadingAvatar ? 'Uploading...' : <><Upload size={14} /> Upload new pfp</>}
+                <input type="file" className="hidden" onChange={handleAvatarUpload} accept="image/*" disabled={uploadingAvatar} />
+              </label>
+            </div>
             <div className="md:col-span-2">
               <label className="text-xs text-zinc-400 block mb-1">Headline</label>
               <input type="text" value={editForm.headline || ''} onChange={e => setEditForm({...editForm, headline: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white text-sm" />

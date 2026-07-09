@@ -8,6 +8,7 @@ const ideaSchema = new mongoose.Schema(
     startup: { type: mongoose.Schema.Types.ObjectId, ref: 'Startup' },
     tags: [String],
     attachmentUrl: String,
+    viewCount: { type: Number, default: 0 },
     status: { type: String, enum: ['draft', 'submitted', 'reviewed', 'accepted'], default: 'draft' },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date, default: null },
