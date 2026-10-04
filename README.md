@@ -32,7 +32,7 @@ Nexora is a centralized web-based platform that assists entrepreneurs throughout
 
 ## 🛠️ Technology Stack (MERN)
 
-- **Frontend**: React.js, HTML5, CSS3, JavaScript (ES6), Tailwind CSS
+- **Frontend**: React.js, HTML5, CSS3, JavaScript (ES6), Tailwind CSS,GSAP.js
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB Atlas
 - **Version Control**: Git & GitHub
